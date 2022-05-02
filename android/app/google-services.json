@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "974937039331",
+    "firebase_url": "https://goddess-guild-default-rtdb.firebaseio.com",
+    "project_id": "goddess-guild",
+    "storage_bucket": "goddess-guild.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:974937039331:android:e7fbeb202a00a1e94580d6",
+        "android_client_info": {
+          "package_name": "com.example.goddessguild"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "974937039331-uivsj8d50gtue82u5fen14rci9gn1acp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB80rdpvb2fB1AIYVUSoyX65cZRKXdiWwU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "974937039331-uivsj8d50gtue82u5fen14rci9gn1acp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
