@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:goddessGuild/Library/bubbleTabCustom/bubbleTab.dart';
+import 'package:goddessGuild/constants.dart';
+
 import 'package:goddessGuild/Screen/B1_Home/Home_Search/search_page.dart';
 import 'package:goddessGuild/Screen/B2_Category/Category_Place/L1/category/artGermany.dart';
 import 'package:goddessGuild/Screen/B2_Category/Category_Place/L1/category/musicGermany.dart';
@@ -13,8 +15,8 @@ import 'package:shimmer/shimmer.dart';
 import 'category/allGermany.dart';
 
 class germany extends StatefulWidget {
-  String userId, nameAppbar;
-  germany({this.userId, this.nameAppbar});
+  String user_id, nameAppbar;
+  germany({this.user_id, this.nameAppbar});
 
   _germanyState createState() => _germanyState();
 }
@@ -104,16 +106,16 @@ class _germanyState extends State<germany> {
                         body: new TabBarView(
                           children: [
                             allGermany(
-                              idUser: widget.userId,
+                              idUser: widget.user_id,
                             ),
                             sportGermany(
-                              idUser: widget.userId,
+                              idUser: widget.user_id,
                             ),
                             artGermany(
-                              idUser: widget.userId,
+                              idUser: widget.user_id,
                             ),
                             musicGermany(
-                              idUser: widget.userId,
+                              idUser: widget.user_id,
                             ),
                           ],
                         ),
@@ -153,7 +155,7 @@ class _germanyState extends State<germany> {
                       onTap: () {
                         Navigator.of(context).push(PageRouteBuilder(
                             pageBuilder: (_, __, ___) => new searchPage(
-                                  idUser: widget.userId,
+                                  idUser: widget.user_id,
                                 )));
                       },
                       child: Icon(

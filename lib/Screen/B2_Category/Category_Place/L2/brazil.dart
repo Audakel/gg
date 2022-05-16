@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:goddessGuild/Library/bubbleTabCustom/bubbleTab.dart';
+import 'package:goddessGuild/constants.dart';
 import 'package:goddessGuild/Screen/B1_Home/Home_Search/search_page.dart';
 import 'package:goddessGuild/Screen/B2_Category/Category_Place/L2/category/allBrazil.dart';
 import 'package:goddessGuild/Screen/B2_Category/Category_Place/L2/category/artBrazil.dart';
@@ -11,8 +12,8 @@ import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
 class brazil extends StatefulWidget {
-  String userId;
-  brazil({this.userId});
+  String user_id;
+  brazil({this.user_id});
 
   _brazilState createState() => _brazilState();
 }
@@ -102,16 +103,16 @@ class _brazilState extends State<brazil> {
                         body: new TabBarView(
                           children: [
                             allBrazil(
-                              idUser: widget.userId,
+                              idUser: widget.user_id,
                             ),
                             sportBrazil(
-                              idUser: widget.userId,
+                              idUser: widget.user_id,
                             ),
                             artBrazil(
-                              idUser: widget.userId,
+                              idUser: widget.user_id,
                             ),
                             musicBrazil(
-                              idUser: widget.userId,
+                              idUser: widget.user_id,
                             ),
                           ],
                         ),
@@ -137,8 +138,9 @@ class _brazilState extends State<brazil> {
                     },
                     child: Icon(Icons.clear)),
                 Text(
-                  "Level 2: Gentlemen's Club",
+                  "Level 2: Gala",
                   style: TextStyle(
+
                       fontFamily: "Sofia",
                       fontWeight: FontWeight.w800,
                       fontSize: 17.0,

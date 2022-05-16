@@ -11,18 +11,18 @@ import 'package:date_format/date_format.dart';
 
 class updateEvent extends StatefulWidget {
   String list;
-  final String title, userId, category, imageUrl, desc, time, place, id, date;
+  final String title, user_id, category, image_url, desc, time, place, id, date;
   updateEvent(
       {this.id,
       this.category,
       this.desc,
-      this.imageUrl,
+      this.image_url,
       this.list,
       this.time,
       this.date,
       this.place,
       this.title,
-      this.userId});
+      this.user_id});
 
   @override
   _updateEventState createState() => _updateEventState();
@@ -73,7 +73,7 @@ class _updateEventState extends State<updateEvent> {
   void initState() {
     if (_imageVar == null) {
       setState(() {
-        _imageVar = widget.imageUrl;
+        _imageVar = widget.image_url;
       });
     }
     titleController = TextEditingController(text: widget.title);
@@ -225,14 +225,14 @@ class _updateEventState extends State<updateEvent> {
 
   updateData() async {
     await FirebaseFirestore.instance
-        .collection("users")
-        .doc(widget.userId)
+        .collection("user")
+        .doc(widget.user_id)
         .collection('event')
         .doc(widget.list.toString())
         .update({
-      "imageUrl": _imageVar.toString(),
+      "image_url": _imageVar.toString(),
       "title": titleController.text,
-      "time": _timeController.text,
+      "time_start": _timeController.text,
       "place": placeController.text,
       "date": _dateController.text,
       "desc1": desc1Controller.text,
@@ -246,9 +246,9 @@ class _updateEventState extends State<updateEvent> {
         .collection("event")
         .doc(widget.list.toString())
         .update({
-      "imageUrl": _imageVar.toString(),
+      "image_url": _imageVar.toString(),
       "title": titleController.text,
-      "time": _timeController.text,
+      "time_start": _timeController.text,
       "place": placeController.text,
       "date": _dateController.text,
       "desc1": desc1Controller.text,
@@ -283,7 +283,7 @@ class _updateEventState extends State<updateEvent> {
                           width: double.infinity,
                           decoration: BoxDecoration(
                               image: DecorationImage(
-                                  image: NetworkImage(widget.imageUrl))),
+                                  image: NetworkImage(widget.image_url))),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(top: 200.0),
@@ -366,7 +366,7 @@ class _updateEventState extends State<updateEvent> {
                 height: 20.0,
               ),
               Text(
-                "Time",
+                "Time Start",
                 style: TextStyle(
                     fontFamily: "Sofia",
                     fontWeight: FontWeight.w700,
@@ -401,7 +401,7 @@ class _updateEventState extends State<updateEvent> {
                       controller: _timeController,
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.all(13.0),
-                        hintText: "Time",
+                        hintText: "time_start",
                         hintStyle:
                             TextStyle(fontFamily: "Sofia", fontSize: 18.0),
                         border: OutlineInputBorder(

@@ -8,8 +8,8 @@ import 'package:shimmer/shimmer.dart';
 import 'Detail_Event.dart';
 
 class allPopularEvents extends StatefulWidget {
-  String userId;
-  allPopularEvents({Key key, this.userId}) : super(key: key);
+  String user_id;
+  allPopularEvents({Key key, this.user_id}) : super(key: key);
 
   @override
   _allPopularEventsState createState() => _allPopularEventsState();
@@ -55,7 +55,7 @@ class _allPopularEventsState extends State<allPopularEvents> {
           onTap: () {
             Navigator.of(context).push(PageRouteBuilder(
                 pageBuilder: (_, __, ___) => new searchPage(
-                      idUser: widget.userId,
+                      idUser: widget.user_id,
                     )));
           },
           child: Padding(
@@ -95,7 +95,7 @@ class _allPopularEventsState extends State<allPopularEvents> {
                           return _loadingDataHeader(ctx);
                         } else {
                           return new cardDataFirestore(
-                            dataUser: widget.userId,
+                            user_id: widget.user_id,
                             list: snapshot.data.docs,
                           );
                         }
@@ -127,8 +127,8 @@ Widget _loadingDataHeader(BuildContext context) {
 }
 
 class cardDataFirestore extends StatelessWidget {
-  String dataUser;
-  cardDataFirestore({this.dataUser, this.list});
+  String user_id;
+  cardDataFirestore({this.user_id, this.list});
 
   final List<DocumentSnapshot> list;
   @override
@@ -140,33 +140,21 @@ class cardDataFirestore extends StatelessWidget {
         itemBuilder: (context, i) {
           String title = list[i].data()['title'].toString();
           String category = list[i].data()['category'].toString();
-          String imageUrl = list[i].data()['imageUrl'].toString();
+          String image_url = list[i].data()['image_url'].toString();
           String id = list[i].data()['id'].toString();
           String description = list[i].data()['desc1'].toString();
           String price = list[i].data()['price'].toString();
           String hours = list[i].data()['time'].toString();
           String date = list[i].data()['date'].toString();
-          String location = list[i].data()['place'].toString();
+          String location = list[i].data()['address'].toString();
           String description2 = list[i].data()['desc2'].toString();
           String description3 = list[i].data()['desc3'].toString();
 
           return InkWell(
             onTap: () {
               Navigator.of(context).push(PageRouteBuilder(
-                  pageBuilder: (_, __, ___) => new newsHeaderListDetail(
-                        category: category,
-                        desc: description,
-                        price: price,
-                        imageUrl: imageUrl,
-                        index: list[i].reference,
-                        time: hours,
-                        date: date,
-                        place: location,
-                        title: title,
-                        id: id,
-                        userId: dataUser,
-                        desc2: description2,
-                        desc3: description3,
+                  pageBuilder: (_, __, ___) => new eventListDetail(
+
                       ),
                   transitionDuration: Duration(milliseconds: 600),
                   transitionsBuilder:
@@ -192,7 +180,7 @@ class cardDataFirestore extends StatelessWidget {
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10.0)),
                             image: DecorationImage(
-                                image: NetworkImage(imageUrl),
+                                image: NetworkImage(image_url),
                                 fit: BoxFit.cover),
                             boxShadow: [
                               BoxShadow(
@@ -299,7 +287,7 @@ class joinEvent extends StatelessWidget {
                 itemBuilder: (context, i) {
                   String _title = list[i].data()['name'].toString();
                   String _npm = list[i].data()['country'].toString();
-                  String _img = list[i].data()['photoProfile'].toString();
+                  String _img = list[i].data()['profile_photo'].toString();
 
                   return Row(
                     children: <Widget>[

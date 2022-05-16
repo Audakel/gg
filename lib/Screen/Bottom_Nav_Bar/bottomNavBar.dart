@@ -21,15 +21,15 @@ class _bottomNavBarState extends State<bottomNavBar> {
     switch (current) {
       case 0:
         return new showCaseHome(
-          userId: widget.idUser,
+          user_id: widget.idUser,
         );
         Category(
-          userId: widget.idUser,
+          user_id: widget.idUser,
         );
         break;
       case 1:
         return new Category(
-          userId: widget.idUser,
+          user_id: widget.idUser,
         );
         break;
       case 2:
@@ -44,7 +44,7 @@ class _bottomNavBarState extends State<bottomNavBar> {
         break;
       default:
         return new showCaseHome(
-          userId: widget.idUser,
+          user_id: widget.idUser,
         );
     }
   }

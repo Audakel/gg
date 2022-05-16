@@ -379,7 +379,7 @@ class _loginState extends State<login> {
                                                 )
                                                 .then((currentUser) => FirebaseFirestore
                                                     .instance
-                                                    .collection("users")
+                                                    .collection("user")
                                                     .doc(currentUser.user.uid)
                                                     .get()
                                                     .then((DocumentSnapshot

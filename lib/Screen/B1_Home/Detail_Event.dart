@@ -2,149 +2,55 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:giffy_dialog/giffy_dialog.dart';
+import 'package:goddessGuild/models.dart';
+import 'package:goddessGuild/db_service.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-class newsHeaderListDetail extends StatefulWidget {
-  final String title,
-      userId,
-      category,
-      imageUrl,
-      desc,
-      price,
-      time,
-      date,
-      place,
-      id,
-      desc2,
-      desc3;
-  final index;
+const GODDESSING = <String>[
+  "Goddess-ing!", // T
+  "I want to Goddess" // F
+];
 
-  newsHeaderListDetail(
-      {this.id,
-      this.category,
-      this.desc,
-      this.price,
-      this.imageUrl,
-      this.index,
-      this.time,
-      this.date,
-      this.place,
-      this.title,
-      this.userId,
-      this.desc2,
-      this.desc3});
+// class GGEvent
+class eventListDetail extends StatefulWidget {
+  final GGEvent ggEvent;
+  final uid;
 
-  _newsListDetailState createState() => _newsListDetailState();
+  eventListDetail({this.ggEvent, this.uid});
+
+  _eventListDetailState createState() => _eventListDetailState();
 }
 
-class _newsListDetailState extends State<newsHeaderListDetail> {
-  String _nama, _npm, _photoProfile;
-  String _join = "Join";
+class _eventListDetailState extends State<eventListDetail> {
+  String goddessStatus = GODDESSING[1];
 
-  void _getData() {
-    StreamBuilder(
-      stream: FirebaseFirestore.instance
-          .collection('users')
-          .doc(widget.userId)
-          .snapshots(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return new Text("Loading");
-        } else {
-          var userDocument = snapshot.data;
-          _nama = userDocument["name"];
-          _npm = userDocument["npm"];
-          _photoProfile = userDocument["photoProfile"];
-
-          setState(() {
-            var userDocument = snapshot.data;
-            _nama = userDocument["name"];
-            _npm = userDocument["npm"];
-            _photoProfile = userDocument["photoProfile"];
-          });
-        }
-
-        var userDocument = snapshot.data;
-        return Stack(
-          children: <Widget>[Text(userDocument["name"])],
-        );
-      },
-    );
-  }
-
-  _checkFirst() async {
-    SharedPreferences prefs;
-    prefs = await SharedPreferences.getInstance();
-    if (prefs.getString(widget.title) == null) {
-      setState(() {
-        _join = "Join";
-      });
-    } else {
-      setState(() {
-        _join = "Joined";
-      });
+  void checkEventStatus() async{
+    bool withEvent = await isGoddessWithEvent(widget.ggEvent.doc_id);
+    if (withEvent) {
+      goddessStatus = GODDESSING[0];
     }
-  }
-
-  _check() async {
-    SharedPreferences prefs;
-    prefs = await SharedPreferences.getInstance();
-    prefs.setString(widget.title, "1");
+    else {
+      goddessStatus = GODDESSING[1];
+    }
+    setState((){});
   }
 
   @override
   void initState() {
-    _checkFirst();
-    _getData();
+    checkEventStatus();
+
     // TODO: implement initState
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    void addData() {
-      FirebaseFirestore.instance
-          .runTransaction((Transaction transaction) async {
-        FirebaseFirestore.instance
-            .collection("JoinEvent")
-            .doc("user")
-            .collection(widget.title)
-            .doc(widget.userId)
-            .set({
-          "nama": _nama,
-          "npm": widget.userId,
-          "photoProfile": _photoProfile
-        });
-      });
-    }
-
-    void userSaved() {
-      FirebaseFirestore.instance
-          .runTransaction((Transaction transaction) async {
-        SharedPreferences prefs;
-        prefs = await SharedPreferences.getInstance();
-        FirebaseFirestore.instance
-            .collection("users")
-            .doc(widget.userId)
-            .collection('Join Event')
-            .add({
-          "user": widget.userId,
-          "title": widget.title,
-          "category": widget.category,
-          "imageUrl": widget.imageUrl,
-          "desc1": widget.desc,
-          "desc2": widget.desc2,
-          "desc3": widget.desc3,
-          "price": widget.price,
-          "time": widget.time,
-          "date": widget.date,
-          "id": widget.id,
-          "place": widget.place
-        });
-      });
-      Navigator.pop(context);
-    }
-
-    double _height = MediaQuery.of(context).size.height;
+    double _height = MediaQuery
+        .of(context)
+        .size
+        .height;
+    bool isLoading = false;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -156,44 +62,19 @@ class _newsListDetailState extends State<newsHeaderListDetail> {
               slivers: <Widget>[
                 SliverPersistentHeader(
                   delegate: MySliverAppBar(
-                      expandedHeight: _height - 40.0,
-                      img: widget.imageUrl,
-                      title: widget.title,
-                      id: widget.id),
+                    expandedHeight: _height / 3,
+                    img: widget.ggEvent.image_url,
+                    title: " "
+                  ),
                   pinned: true,
                 ),
                 SliverToBoxAdapter(
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                      StreamBuilder(
-                        stream: FirebaseFirestore.instance
-                            .collection('users')
-                            .doc(widget.userId)
-                            .snapshots(),
-                        builder: (context, snapshot) {
-                          if (!snapshot.hasData) {
-                            return new Text("Loading");
-                          } else {
-                            var userDocument = snapshot.data;
-                            _nama = userDocument["name"];
-                            _photoProfile = userDocument["photoProfile"];
-                          }
-
-                          var userDocument = snapshot.data;
-                          return Container();
-                        },
-                      ),
+                    child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
                       Padding(
                         padding: EdgeInsets.only(top: 30.0, left: 20.0),
                         child: Text(
-                          widget.title,
-                          style: TextStyle(
-                              fontSize: 20.0,
-                              fontWeight: FontWeight.w700,
-                              letterSpacing: 1.5,
-                              fontFamily: "Popins"),
+                          widget.ggEvent.title,
+                          style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w700, letterSpacing: 1.5, fontFamily: "Popins"),
                         ),
                       ),
                       Padding(
@@ -211,19 +92,14 @@ class _newsListDetailState extends State<newsHeaderListDetail> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Text(
-                                    widget.date,
-                                    style: TextStyle(
-                                        fontSize: 16.0,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.black,
-                                        fontFamily: "Popins"),
+                                    widget.ggEvent.date,
+                                    style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500, color: Colors.black, fontFamily: "Popins"),
                                   ),
                                   Text(
-                                    widget.time,
-                                    style: TextStyle(
-                                        fontSize: 15.0,
-                                        fontWeight: FontWeight.w400,
-                                        color: Colors.black54),
+                                    widget.ggEvent.time_start
+                                        + " - "
+                                        + widget.ggEvent.time_end,
+                                    style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.w400, color: Colors.black54),
                                   ),
                                 ],
                               ),
@@ -232,8 +108,7 @@ class _newsListDetailState extends State<newsHeaderListDetail> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(
-                            top: 15.0, left: 25.0, right: 30.0),
+                        padding: const EdgeInsets.only(top: 15.0, left: 25.0, right: 30.0),
                         child: Divider(
                           color: Colors.black12,
                           height: 2.0,
@@ -255,18 +130,11 @@ class _newsListDetailState extends State<newsHeaderListDetail> {
                                 children: <Widget>[
                                   Text(
                                     "Location",
-                                    style: TextStyle(
-                                        fontSize: 16.0,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.black,
-                                        fontFamily: "Popins"),
+                                    style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500, color: Colors.black, fontFamily: "Popins"),
                                   ),
                                   Text(
-                                    widget.place,
-                                    style: TextStyle(
-                                        fontSize: 15.0,
-                                        fontWeight: FontWeight.w400,
-                                        color: Colors.black54),
+                                    widget.ggEvent.address,
+                                    style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.w400, color: Colors.black54),
                                   ),
                                 ],
                               ),
@@ -275,8 +143,7 @@ class _newsListDetailState extends State<newsHeaderListDetail> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(
-                            top: 15.0, left: 25.0, right: 30.0),
+                        padding: const EdgeInsets.only(top: 15.0, left: 25.0, right: 30.0),
                         child: Divider(
                           color: Colors.black12,
                           height: 2.0,
@@ -289,26 +156,31 @@ class _newsListDetailState extends State<newsHeaderListDetail> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Icon(
-                              Icons.payment,
+                              Icons.accessibility_new,
                               color: Colors.black26,
                             ),
                             Padding(
                               padding: const EdgeInsets.only(left: 15.0),
-                              child: Text(
-                                widget.price,
-                                style: TextStyle(
-                                    fontSize: 16.0,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.black,
-                                    fontFamily: "Popins"),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text(
+                                    "Patrons Expected",
+                                    style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500, color: Colors.black, fontFamily: "Popins"),
+                                  ),
+                                  Text(
+                                    widget.ggEvent.guests_expected.toString(),
+                                    style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.w400, color: Colors.black54),
+                                  ),
+                                ],
                               ),
-                            ),
+                            )
                           ],
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(
-                            top: 15.0, left: 25.0, right: 30.0),
+                        padding: const EdgeInsets.only(top: 15.0, left: 25.0, right: 30.0),
                         child: Divider(
                           color: Colors.black12,
                           height: 2.0,
@@ -317,13 +189,8 @@ class _newsListDetailState extends State<newsHeaderListDetail> {
                       Padding(
                           padding: EdgeInsets.only(top: 15.0, bottom: 0.0),
                           child: StreamBuilder(
-                            stream: FirebaseFirestore.instance
-                                .collection("JoinEvent")
-                                .doc("user")
-                                .collection(widget.title)
-                                .snapshots(),
-                            builder: (BuildContext ctx,
-                                AsyncSnapshot<QuerySnapshot> snapshot) {
+                            stream: FirebaseFirestore.instance.collection("JoinEvent").doc("user").collection(widget.ggEvent.title).snapshots(),
+                            builder: (BuildContext ctx, AsyncSnapshot<QuerySnapshot> snapshot) {
                               if (!snapshot.hasData) {
                                 return CircularProgressIndicator();
                               } else {
@@ -343,23 +210,14 @@ class _newsListDetailState extends State<newsHeaderListDetail> {
                         padding: EdgeInsets.only(top: 30.0, left: 20.0),
                         child: Text(
                           "About",
-                          style: TextStyle(
-                              fontSize: 19.0,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black,
-                              fontFamily: "Popins"),
+                          style: TextStyle(fontSize: 19.0, fontWeight: FontWeight.w600, color: Colors.black, fontFamily: "Popins"),
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(
-                            top: 10.0, left: 20.0, right: 20.0, bottom: 20.0),
+                        padding: const EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0, bottom: 20.0),
                         child: Text(
-                          widget.desc,
-                          style: TextStyle(
-                              fontFamily: "Popins",
-                              color: Colors.black,
-                              fontSize: 15.0,
-                              fontWeight: FontWeight.w400),
+                          widget.ggEvent.desc1,
+                          style: TextStyle(fontFamily: "Popins", color: Colors.black, fontSize: 15.0, fontWeight: FontWeight.w400),
                           textAlign: TextAlign.justify,
                         ),
                       ),
@@ -376,71 +234,77 @@ class _newsListDetailState extends State<newsHeaderListDetail> {
                 width: double.infinity,
                 color: Colors.white,
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.only(left: 20.0),
-                      child: Text(
-                        widget.price,
-                        style: TextStyle(
-                            color: Colors.black54,
-                            fontSize: 19.0,
-                            fontFamily: "Popins"),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 20.0),
-                      child: InkWell(
-                        onTap: () async {
-                          SharedPreferences prefs;
-                          prefs = await SharedPreferences.getInstance();
-                          _check();
-                          if (prefs.getString(widget.title) == null) {
-                            setState(() {
-                              _join = "Joined";
-                            });
-
-                            addData();
-                            userSaved();
-                          } else {
-                            setState(() {
-                              _join = "Joined";
-                            });
-                          }
-                        },
-                        child: Container(
-                          height: 50.0,
-                          width: 180.0,
-                          decoration: BoxDecoration(
-                              color: Colors.deepPurpleAccent,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(40.0))),
-                          child: Center(
-                            child: Text(
-                              _join,
-                              style: TextStyle(
-                                  fontFamily: "Popins",
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w400),
-                            ),
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                Padding(
+                padding: const EdgeInsets.only(left: 20.0),
+                child: Text(
+                  widget.ggEvent.price.toString(),
+                  style: TextStyle(color: Colors.black54, fontSize: 19.0, fontFamily: "Popins"),
                 ),
               ),
-            ),
-          ],
+              Padding(
+                padding: const EdgeInsets.only(right: 20.0),
+                child: isLoading
+                    ? Container(
+                    width: ScreenUtil.getInstance().setWidth(330),
+                    height: ScreenUtil.getInstance().setHeight(100),
+                    child:
+                    SpinKitPumpingHeart(
+                      itemBuilder: (BuildContext context, int index) {
+                        return DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: index.isEven ? Color(0xFFD898F8) : Color(0xFF8189EC),
+                          ),
+                        );
+                      },
+                    )
+                )
+                    : InkWell(
+                        onTap: () async {
+                          setState(() {isLoading = true;});
+                          bool withEvent = await isGoddessWithEvent(widget.ggEvent.doc_id);
+
+                          if (withEvent) {
+                            goddessStatus = "I want to Goddess";
+                            await deleteGoddessFromEvent(widget.ggEvent.doc_id);
+                          }
+                          else {
+                            goddessStatus = "Goddess-ing!";
+                            await addGoddessToEvent(widget.ggEvent.doc_id);
+                          }
+                          setState(() {isLoading = false;});
+                        },
+                    child: Container(
+                      height: 50.0,
+                      width: 180.0,
+                      decoration: BoxDecoration(
+                          color: (goddessStatus == GODDESSING[0]) ? Colors.purpleAccent : Colors.deepPurpleAccent,
+                          borderRadius: BorderRadius.all(Radius.circular(40.0))),
+                      child: Center(
+                        child: Text(goddessStatus,
+                          style: TextStyle(fontFamily: "Popins", color: Colors.white, fontWeight: FontWeight.w400),
+                        ),
+                      ),
+                    )),
+              ),
+            ],
         ),
       ),
+    ),]
+    ,
+    )
+    ,
+    )
+    ,
     );
   }
 }
 
 class joinEvent extends StatelessWidget {
   joinEvent({this.list});
+
   final List<DocumentSnapshot> list;
 
   @override
@@ -458,7 +322,7 @@ class joinEvent extends StatelessWidget {
                 itemBuilder: (context, i) {
                   String _title = list[i].data()['nama'].toString();
                   String _uid = list[i].data()['uid'].toString();
-                  String _img = list[i].data()['photoProfile'].toString();
+                  String _img = list[i].data()['profile_photo'].toString();
 
                   return Row(
                     children: <Widget>[
@@ -468,11 +332,8 @@ class joinEvent extends StatelessWidget {
                           height: 35.0,
                           width: 35.0,
                           decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(70.0)),
-                              image: DecorationImage(
-                                  image: NetworkImage(_img),
-                                  fit: BoxFit.cover)),
+                              borderRadius: BorderRadius.all(Radius.circular(70.0)),
+                              image: DecorationImage(image: NetworkImage(_img), fit: BoxFit.cover)),
                         ),
                       ),
                     ],
@@ -497,12 +358,10 @@ class MySliverAppBar extends SliverPersistentHeaderDelegate {
 
   String img, title, id;
 
-  MySliverAppBar(
-      {@required this.expandedHeight, this.img, this.title, this.id});
+  MySliverAppBar({@required this.expandedHeight, this.img, this.title, this.id});
 
   @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Stack(
       fit: StackFit.expand,
       overflow: Overflow.clip,
@@ -528,17 +387,13 @@ class MySliverAppBar extends SliverPersistentHeaderDelegate {
               child: Container(
                 margin: EdgeInsets.only(top: 130.0),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      colors: <Color>[
-                        new Color(0x00FFFFFF),
-                        new Color(0xFFFFFFFF),
-                      ],
-                      stops: [
-                        0.0,
-                        1.0
-                      ],
-                      begin: FractionalOffset(0.0, 0.0),
-                      end: FractionalOffset(0.0, 1.0)),
+                  gradient: LinearGradient(colors: <Color>[
+                    new Color(0x00FFFFFF),
+                    new Color(0xFFFFFFFF),
+                  ], stops: [
+                    0.0,
+                    1.0
+                  ], begin: FractionalOffset(0.0, 0.0), end: FractionalOffset(0.0, 1.0)),
                 ),
               ),
             ),
@@ -563,7 +418,7 @@ class MySliverAppBar extends SliverPersistentHeaderDelegate {
               child: Container(
                 width: 250.0,
                 child: Text(
-                  "Event",
+                  title,
                   style: TextStyle(
                     color: Colors.black54,
                     fontFamily: "Poppins",

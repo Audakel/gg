@@ -9,9 +9,9 @@ import 'package:path/path.dart';
 import 'dart:async';
 
 class updateProfile extends StatefulWidget {
-  String name, password, country, photoProfile, uid, city;
+  String name, password, country, profile_photo, uid, city;
   updateProfile(
-      {this.country, this.name, this.photoProfile, this.uid, this.city});
+      {this.country, this.name, this.profile_photo, this.uid, this.city});
 
   _updateProfileState createState() => _updateProfileState();
 }
@@ -30,7 +30,7 @@ class _updateProfileState extends State<updateProfile> {
   void initState() {
     if (profilePicUrl == null) {
       setState(() {
-        profilePicUrl = widget.photoProfile;
+        profilePicUrl = widget.profile_photo;
       });
     }
     nameController = TextEditingController(text: widget.name);
@@ -92,12 +92,12 @@ class _updateProfileState extends State<updateProfile> {
 
   updateData() async {
     await FirebaseFirestore.instance
-        .collection('users')
+        .collection('user')
         .doc(widget.uid)
         .update({
       "name": nameController.text,
       "country": countryController.text,
-      'photoProfile': profilePicUrl.toString(),
+      'profile_photo': profilePicUrl.toString(),
       "city": cityController.text
     });
   }
@@ -150,7 +150,7 @@ class _updateProfileState extends State<updateProfile> {
                                 backgroundColor: Colors.blueAccent,
                                 radius: 170.0,
                                 backgroundImage:
-                                    NetworkImage(widget.photoProfile),
+                                    NetworkImage(widget.profile_photo),
                               ),
                               Align(
                                 alignment: Alignment.bottomRight,

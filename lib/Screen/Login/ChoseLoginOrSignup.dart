@@ -69,23 +69,29 @@ class _ChoseLoginState extends State<ChoseLogin> with TickerProviderStateMixin {
             child: new Carousel(
               boxFit: BoxFit.cover,
               autoplay: true,
-              animationDuration: Duration(milliseconds: 300),
+              animationDuration: Duration(milliseconds: 1000),
               dotSize: 0.0,
               dotSpacing: 16.0,
               dotBgColor: Colors.transparent,
               showIndicator: false,
-              overlayShadow: false,
+              autoplayDuration: Duration(seconds: 4),
+              overlayShadow: true,
+              overlayShadowColors: Colors.black,
+              overlayShadowSize: 0.7,
+
               images: [
                 AssetImage(
-                  "assets/gif/event1.gif",
+                  "assets/image/gg_hecate.png",
                 ),
-                NetworkImage(
-                    "https://images.pexels.com/photos/2077961/pexels-photo-2077961.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"),
                 AssetImage(
-                  "assets/gif/event2.gif",
+                  "assets/image/gg_ap.png",
                 ),
-                NetworkImage(
-                    "https://images.pexels.com/photos/2086199/pexels-photo-2086199.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"),
+                AssetImage(
+                  "assets/image/gg_athena.png",
+                ),
+                AssetImage(
+                  "assets/image/gg_egypt.png",
+                ),
               ],
             ),
           ),
@@ -125,7 +131,7 @@ class _ChoseLoginState extends State<ChoseLogin> with TickerProviderStateMixin {
                                   child: Hero(
                                     tag: "Event",
                                     child: Text(
-                                      "Event Country",
+                                      "_goddessGuild()",
                                       style: TextStyle(
                                         fontFamily: 'Sans',
                                         fontWeight: FontWeight.w900,
@@ -147,11 +153,11 @@ class _ChoseLoginState extends State<ChoseLogin> with TickerProviderStateMixin {
                                       height: 0.5,
                                     )),
                                 Text(
-                                  "Life  is only once, Enjoy your life! ",
+                                  "Decentralized Live Entertainment",
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 17.0,
-                                      fontWeight: FontWeight.w200,
+                                      fontWeight: FontWeight.w400,
                                       fontFamily: "Sans",
                                       letterSpacing: 1.3),
                                 ),
@@ -200,7 +206,7 @@ class _ChoseLoginState extends State<ChoseLogin> with TickerProviderStateMixin {
 
                                       /// navigation to home screen if user click "OR SKIP" (Click to open code)
                                       child: Text(
-                                        "OR SKIP",
+                                        "OR",
                                         style: TextStyle(
                                             color: Colors.white,
                                             fontWeight: FontWeight.w100,

@@ -52,6 +52,7 @@ dependencies:
   uuid: ^2.2.2
   date_format: ^1.0.9
   platform: ^3.1.0
+  flutter_spinkit: ^5.1.0
 
   currency_text_input_formatter: ^2.1.5
 
@@ -90,6 +91,10 @@ flutter:
     - assets/image/banner.png
     - assets/image/backgroundBanner.png
     - assets/image/logo.png
+    - assets/image/gg_egypt.png
+    - assets/image/gg_athena.png
+    - assets/image/gg_ap.png
+    - assets/image/gg_hecate.png
     - assets/image/news.png
     - assets/gif/event1.gif
     - assets/gif/event2.gif
@@ -118,6 +123,12 @@ flutter:
     - assets/icon/paris.png
     - assets/icon/spanyol.png
     - assets/icon/thailand.png
+    - assets/icon/masks/1.png
+    - assets/icon/masks/2.png
+    - assets/icon/masks/3.png
+    - assets/icon/masks/all.jpg
+    - assets/image/masks/1.jpg
+    - assets/image/masks/2.jpg
     - assets/image/searching.png
     - assets/image/noInternet.png
     - assets/icon/createEvent.png
@@ -235,3 +246,8 @@ flutter:
 
 dependency_overrides:
   intl: ^0.16.1
+
+analyzer:
+  strong-mode: true
+  language:
+  enableSuperMixins: true

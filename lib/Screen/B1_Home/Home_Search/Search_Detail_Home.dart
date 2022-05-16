@@ -8,14 +8,14 @@ class searchDetail extends StatefulWidget {
   @override
   final String title,
       category,
-      imageUrl,
+      image_url,
       description,
       price,
       time,
       date,
       place,
       id,
-      userId;
+      user_id;
   final index;
 
   searchDetail(
@@ -23,13 +23,13 @@ class searchDetail extends StatefulWidget {
       this.category,
       this.description,
       this.price,
-      this.imageUrl,
+      this.image_url,
       this.index,
       this.time,
       this.date,
       this.place,
       this.title,
-      this.userId});
+      this.user_id});
 
   _searchDetailState createState() => _searchDetailState();
 }
@@ -43,17 +43,17 @@ class _searchDetailState extends State<searchDetail> {
         SharedPreferences prefs;
         prefs = await SharedPreferences.getInstance();
         FirebaseFirestore.instance
-            .collection("users")
-            .doc(widget.userId)
+            .collection("user")
+            .doc(widget.user_id)
             .collection('Join Event')
             .add({
           "user": "userss",
           "title": widget.title,
           "category": widget.category,
-          "img": widget.imageUrl,
+          "img": widget.image_url,
           "description": widget.description,
           "price": widget.price,
-          "time": widget.time,
+          "time_start": widget.time,
           "date": widget.date,
           "id": widget.id,
           "place": widget.place
@@ -69,7 +69,7 @@ class _searchDetailState extends State<searchDetail> {
         decoration: new BoxDecoration(
           image: new DecorationImage(
             fit: BoxFit.cover,
-            image: new NetworkImage(widget.imageUrl),
+            image: new NetworkImage(widget.image_url),
           ),
           shape: BoxShape.rectangle,
         ),

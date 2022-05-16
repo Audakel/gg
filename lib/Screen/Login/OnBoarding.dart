@@ -9,41 +9,42 @@ class onBoarding extends StatefulWidget {
 }
 
 var _fontHeaderStyle = TextStyle(
+    color: Colors.white,
     fontFamily: "Arial",
     fontSize: 24.0,
     fontWeight: FontWeight.w800,
-    color: Colors.black87,
     letterSpacing: 1.5);
 
 var _fontDescriptionStyle = TextStyle(
+    color: Colors.white,
     fontFamily: "Sans",
     fontSize: 17.0,
-    color: Colors.black26,
-    fontWeight: FontWeight.w300);
+    fontWeight: FontWeight.w400);
 
 ///
 /// Page View Model for on boarding
 ///
 final pages = [
   new PageViewModel(
-      pageColor: Colors.white,
+      pageColor: Colors.black,
       iconColor: Colors.black,
       bubbleBackgroundColor: Colors.black,
       title: Text(
-        'Schedule',
+        'Safety',
         style: _fontHeaderStyle,
       ),
       body: Container(
         height: 500.0,
         child: Text(
-            'Lorem Ipsum is simply  dummy color\ntext of  the printing and color\ntypesetting industry color.',
+            'Everyone is background checked, rated and reviewed. Private security '
+                'at all events. Masquerade ball masks for anonymity. Everyone is treated'
+                'with dignity and respect',
             textAlign: TextAlign.center,
-            style: _fontDescriptionStyle),
+            style: _fontDescriptionStyle
+        ),
       ),
       mainImage: Image.asset(
-        'assets/image/onBoarding1.png',
-        height: 355.0,
-        width: 355.0,
+        'assets/image/masks/1.jpg',
         alignment: Alignment.center,
       )),
   new PageViewModel(
@@ -51,39 +52,50 @@ final pages = [
       iconColor: Colors.black,
       bubbleBackgroundColor: Colors.black,
       title: Text(
-        'Learning',
-        style: _fontHeaderStyle,
+        'Fantasy',
+        style: _fontHeaderStyle.copyWith(
+          color: Colors.black,
+        )
       ),
       body: Container(
         height: 250.0,
         child: Text(
-            'Lorem Ipsum is simply  dummy color\ntext of  the printing and color\ntypesetting industry color.',
+            'Dancers are given a platform where their creativity shines. '
+                'Patrons get to experience a magical, fantasy world. '
+                'Each event is a unique experience.',
             textAlign: TextAlign.center,
-            style: _fontDescriptionStyle),
+            style: _fontDescriptionStyle.copyWith(
+              color: Colors.black,
+            ),
+        ),
       ),
       mainImage: Image.asset(
-        'assets/image/onBoarding2.png',
+        'assets/icon/masks/2.png',
         height: 285.0,
         width: 285.0,
         alignment: Alignment.center,
-      )),
+      )
+  ),
   new PageViewModel(
-      pageColor: Colors.white,
+      pageColor: Colors.black,
       iconColor: Colors.black,
       bubbleBackgroundColor: Colors.black,
       title: Text(
-        'Conversation',
+        'Dance Dance Révolution',
         style: _fontHeaderStyle,
       ),
       body: Container(
         height: 250.0,
         child: Text(
-            'Lorem Ipsum is simply  dummy color\ntext of  the printing and color\ntypesetting industry color.',
+                'Level up the adult industry with new technology '
+                    'and bring conscious, tantric ideology '
+                    'into the next generation of elite '
+                    'decentralized gentlemen clubs',
             textAlign: TextAlign.center,
             style: _fontDescriptionStyle),
       ),
       mainImage: Image.asset(
-        'assets/image/onBoarding3.png',
+        'assets/image/masks/2.jpg',
         height: 285.0,
         width: 285.0,
         alignment: Alignment.center,

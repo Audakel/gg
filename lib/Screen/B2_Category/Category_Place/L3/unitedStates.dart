@@ -13,8 +13,8 @@ import 'category/musicUntedStates.dart';
 import 'category/sportUnitedStates.dart';
 
 class unitedStates extends StatefulWidget {
-  String userId;
-  unitedStates({this.userId});
+  String user_id;
+  unitedStates({this.user_id});
 
   _unitedStatesState createState() => _unitedStatesState();
 }
@@ -104,16 +104,16 @@ class _unitedStatesState extends State<unitedStates> {
                         body: new TabBarView(
                           children: [
                             allUnitedStates(
-                              idUser: widget.userId,
+                              idUser: widget.user_id,
                             ),
                             sportUnitedStates(
-                              idUser: widget.userId,
+                              idUser: widget.user_id,
                             ),
                             artUnitedStates(
-                              idUser: widget.userId,
+                              idUser: widget.user_id,
                             ),
                             musicUnitedStates(
-                              idUser: widget.userId,
+                              idUser: widget.user_id,
                             ),
                           ],
                         ),
@@ -153,7 +153,7 @@ class _unitedStatesState extends State<unitedStates> {
                       onTap: () {
                         Navigator.of(context).push(PageRouteBuilder(
                             pageBuilder: (_, __, ___) => new searchPage(
-                                  idUser: widget.userId,
+                                  idUser: widget.user_id,
                                 )));
                       },
                       child: Icon(

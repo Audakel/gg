@@ -2,12 +2,13 @@ import 'package:goddessGuild/Screen/B1_Home/Home_Search/search_page.dart';
 import 'package:goddessGuild/Screen/B2_Category/Category_Place/L1/germany.dart';
 import 'package:goddessGuild/Screen/B2_Category/Category_Place/L3/unitedStates.dart';
 import 'package:flutter/material.dart';
+import 'needMoreLevels.dart';
+import 'package:goddessGuild/constants.dart';
 
-import 'Category_Place/L2/brazil.dart';
 
 class Category extends StatefulWidget {
-  String userId;
-  Category({this.userId});
+  String user_id;
+  Category({this.user_id});
 
   _CategoryState createState() => _CategoryState();
 }
@@ -35,7 +36,7 @@ class _CategoryState extends State<Category> {
           onTap: () {
             Navigator.of(context).push(PageRouteBuilder(
                 pageBuilder: (_, __, ___) => new searchPage(
-                      idUser: widget.userId,
+                      idUser: widget.user_id,
                     )));
           },
           child: Padding(
@@ -65,34 +66,36 @@ class _CategoryState extends State<Category> {
                 onTap: () {
                   Navigator.of(context).push(PageRouteBuilder(
                       pageBuilder: (_, __, ___) => new germany(
-                            userId: widget.userId,
-                            nameAppbar: "L1: Stripclub",
+                            user_id: widget.user_id,
+                            nameAppbar: EVENT_LEVELS[1],
                           )));
                 },
                 child: itemCard(
                     image: "assets/image/category_country/country2.png",
-                    title: "Level 1: Stripclub")),
+                    title: EVENT_LEVELS[1])),
             InkWell(
                 onTap: () {
                   Navigator.of(context).push(PageRouteBuilder(
-                      pageBuilder: (_, __, ___) => new brazil(
-                            userId: widget.userId,
+                      pageBuilder: (_, __, ___) => new needMoreLevels(
+                            user_id: widget.user_id,
+                            nameAppbar: EVENT_LEVELS[2],
                           )));
                 },
                 child: itemCard(
                   image: "assets/image/category_country/country3.png",
-                  title: "Level 2: Gentl",
+                  title: EVENT_LEVELS[2],
                 )),
             InkWell(
                 onTap: () {
                   Navigator.of(context).push(PageRouteBuilder(
-                      pageBuilder: (_, __, ___) => new unitedStates(
-                            userId: widget.userId,
+                      pageBuilder: (_, __, ___) => new needMoreLevels(
+                            user_id: widget.user_id,
+                            nameAppbar: EVENT_LEVELS[3],
                           )));
                 },
                 child: itemCard(
                   image: "assets/image/category_country/country4.png",
-                  title: "Level 3: Temple",
+                  title: EVENT_LEVELS[3],
                 )),
           ],
         ),

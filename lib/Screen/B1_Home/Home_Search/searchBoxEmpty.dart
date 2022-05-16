@@ -44,7 +44,7 @@ class _searchBoxEmptyState extends State<searchBoxEmpty>
                   onTap: () {
                     Navigator.of(context).push(PageRouteBuilder(
                         pageBuilder: (_, __, ___) => new unitedStates(
-                              userId: widget.idUser,
+                              user_id: widget.idUser,
                             )));
                   },
                   child: cardCountry(
@@ -58,7 +58,7 @@ class _searchBoxEmptyState extends State<searchBoxEmpty>
                   onTap: () {
                     Navigator.of(context).push(PageRouteBuilder(
                         pageBuilder: (_, __, ___) => new germany(
-                              userId: widget.idUser,
+                              user_id: widget.idUser,
                               nameAppbar: "Italy",
                             )));
                   },
@@ -72,7 +72,7 @@ class _searchBoxEmptyState extends State<searchBoxEmpty>
                   onTap: () {
                     Navigator.of(context).push(PageRouteBuilder(
                         pageBuilder: (_, __, ___) => new germany(
-                              userId: widget.idUser,
+                              user_id: widget.idUser,
                               nameAppbar: "England",
                             )));
                   },
@@ -87,7 +87,7 @@ class _searchBoxEmptyState extends State<searchBoxEmpty>
                   onTap: () {
                     Navigator.of(context).push(PageRouteBuilder(
                         pageBuilder: (_, __, ___) => new germany(
-                              userId: widget.idUser,
+                              user_id: widget.idUser,
                               nameAppbar: "Thailand",
                             )));
                   },

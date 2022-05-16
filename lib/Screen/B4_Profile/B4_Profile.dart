@@ -39,7 +39,7 @@ class _profileState extends State<profile> {
   bool isLoading = false;
 
   SharedPreferences prefs;
-  String email, nama, country, photoProfile, city;
+  String email, nama, country, profile_photo, city;
 
   ///
   /// Function for if user logout all preferences can be deleted
@@ -51,14 +51,14 @@ class _profileState extends State<profile> {
 
   @override
   Widget build(BuildContext context) {
-    /// To Sett PhotoProfile,Name and Edit Profile
+    /// To Sett profile_photo,Name and Edit Profile
     var _profile = Padding(
       padding: const EdgeInsets.only(top: 75.0, left: 0.0, right: 20.0),
       child: Stack(
         children: <Widget>[
           StreamBuilder(
               stream: FirebaseFirestore.instance
-                  .collection('users')
+                  .collection('user')
                   .doc(widget.uid)
                   .snapshots(),
               builder: (context, snapshot) {
@@ -150,9 +150,9 @@ class _profileState extends State<profile> {
                                       color: Colors.red,
                                       image: DecorationImage(
                                           image: NetworkImage(userDocument[
-                                                      "photoProfile"] !=
+                                                      "profile_photo"] !=
                                                   null
-                                              ? userDocument["photoProfile"]
+                                              ? userDocument["profile_photo"]
                                               : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png"),
                                           fit: BoxFit.cover),
                                       borderRadius: BorderRadius.all(Radius.circular(75.0)),
@@ -173,7 +173,7 @@ class _profileState extends State<profile> {
                               Text(
                                 userDocument["name"] != null
                                     ? userDocument["name"]
-                                    : "Nama",
+                                    : "Name",
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontFamily: "Sofia",
@@ -197,31 +197,54 @@ class _profileState extends State<profile> {
                                   ),
                                 ),
                               ),
+
+
                             ],
                           ),
                         ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  (userDocument["rating"] != null
+                                      ? userDocument["rating"]
+                                      : 0.0).toString(),
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: "Sofia",
+                                    fontSize: 32.0,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+
+                                Text(
+                                  " ⭐",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: "Sofia",
+                                    fontSize: 28.0,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                        ]),
                         Text(
-                          userDocument["rating"] != null
-                              ? userDocument["rating"]
-                              : "0.0",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontFamily: "Sofia",
-                            fontSize: 32.0,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        Text(
-                          userDocument["level"] != null
+                          "Events: "
+                          + (userDocument["level"] != null
                               ? userDocument["level"]
-                              : "42",
+                              : 42).toString(),
                           style: TextStyle(
                             color: Colors.white,
                             fontFamily: "Sofia",
-                            fontSize: 32.0,
+                            fontSize: 18.0,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
+                      ]),
                       ],
                     ),
                   ),
@@ -240,9 +263,9 @@ class _profileState extends State<profile> {
                                   country: userDocument["country"],
                                   city: userDocument["city"],
                                   name: userDocument["name"],
-                                  photoProfile: userDocument["photoProfile"] !=
+                                  profile_photo: userDocument["profile_photo"] !=
                                           null
-                                      ? userDocument["photoProfile"]
+                                      ? userDocument["profile_photo"]
                                       : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png",
                                   uid: widget.uid,
                                 )));
@@ -324,7 +347,7 @@ class _profileState extends State<profile> {
                             Navigator.of(context).push(PageRouteBuilder(
                                 pageBuilder: (_, __, ___) =>
                                     new UpdateEventList(
-                                      userId: widget.uid,
+                                      user_id: widget.uid,
                                     )));
                           },
                         ),

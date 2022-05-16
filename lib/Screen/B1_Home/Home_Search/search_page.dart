@@ -163,19 +163,8 @@ class _searchPageState extends State<searchPage> {
                             Navigator.of(context).push(
                               PageRouteBuilder(
                                   pageBuilder: (_, __, ___) =>
-                                      new newsHeaderListDetail(
-                                        category: document['category'],
-                                        desc: document['desc1'],
-                                        desc2: document['desc2'],
-                                        desc3: document['desc3'],
-                                        price: document['price'],
-                                        imageUrl: document['imageUrl'],
-                                        time: document['time'],
-                                        date: document['date'],
-                                        place: document['place'],
-                                        title: document['title'],
-                                        id: document['id'],
-                                        userId: widget.idUser,
+                                      new eventListDetail(
+
                                       ),
                                   transitionDuration:
                                       Duration(milliseconds: 600),
@@ -214,7 +203,7 @@ class _searchPageState extends State<searchPage> {
                                       decoration: BoxDecoration(
                                         image: DecorationImage(
                                             image: NetworkImage(
-                                                document['imageUrl']),
+                                                document['image_url']),
                                             fit: BoxFit.cover),
                                       ),
                                     ),
@@ -259,7 +248,7 @@ class _searchPageState extends State<searchPage> {
                                           Container(
                                             width: 150.0,
                                             child: Text(
-                                              document['place'],
+                                              document['address'],
                                               style: TextStyle(
                                                 fontFamily: "Sofia",
                                                 fontSize: 14.0,

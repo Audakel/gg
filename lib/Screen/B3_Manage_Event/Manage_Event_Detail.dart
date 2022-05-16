@@ -4,9 +4,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class eventDetailFavorite extends StatefulWidget {
   final String title,
-      userId,
+      user_id,
       category,
-      imageUrl,
+      image_url,
       description,
       price,
       time,
@@ -22,12 +22,12 @@ class eventDetailFavorite extends StatefulWidget {
       this.category,
       this.description,
       this.place,
-      this.imageUrl,
+      this.image_url,
       this.index,
       this.time,
       this.date,
       this.title,
-      this.userId,
+      this.user_id,
       this.description2,
       this.description3,
       this.price});
@@ -52,7 +52,7 @@ class _eventDetailFavoriteState extends State<eventDetailFavorite> {
             SliverPersistentHeader(
               delegate: MySliverAppBar(
                   expandedHeight: _height - 40.0,
-                  img: widget.imageUrl,
+                  img: widget.image_url,
                   title: widget.title,
                   id: widget.id),
               pinned: true,
@@ -243,7 +243,7 @@ class joinEvent extends StatelessWidget {
                 itemCount: list.length > 3 ? 3 : list.length,
                 itemBuilder: (context, i) {
                   String _title = list[i].data()['nama'].toString();
-                  String _img = list[i].data()['photoProfile'].toString();
+                  String _img = list[i].data()['profile_photo'].toString();
 
                   return Row(
                     children: <Widget>[

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter/widgets.dart';
+import 'package:goddessGuild/models.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -9,14 +10,16 @@ import 'package:showcaseview/showcaseview.dart';
 import 'Detail_Event.dart';
 import 'Home_Search/search_page.dart';
 import 'allPopularEvent.dart';
-
+import 'package:goddessGuild/db_service.dart';
+import 'package:goddessGuild/constants.dart';
 ///
 /// Intro if user open first apps
 ///
 class showCaseHome extends StatefulWidget {
-  String userId;
+  String user_id;
 
-  showCaseHome({this.userId});
+  showCaseHome({this.user_id});
+
   _showCaseHomeState createState() => _showCaseHomeState();
 }
 
@@ -26,15 +29,16 @@ class _showCaseHomeState extends State<showCaseHome> {
     return ShowCaseWidget(
       builder: Builder(
           builder: (context) => Home(
-                userId: widget.userId,
+                user_id: widget.user_id,
               )),
     );
   }
 }
 
 class Home extends StatefulWidget {
-  String userId;
-  Home({this.userId});
+  String user_id;
+
+  Home({this.user_id});
 
   _HomeState createState() => _HomeState();
 }
@@ -78,12 +82,7 @@ class _HomeState extends State<Home> {
     decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.all(Radius.circular(5.0)),
-        boxShadow: [
-          BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 5.0,
-              spreadRadius: 0.0)
-        ]),
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 5.0, spreadRadius: 0.0)]),
     child: Padding(
       padding: const EdgeInsets.only(left: 15.0, right: 15.0),
       child: Row(
@@ -97,11 +96,7 @@ class _HomeState extends State<Home> {
           ),
           Text(
             "Find some Goddesses",
-            style: TextStyle(
-                fontFamily: "Sofia",
-                fontWeight: FontWeight.w400,
-                color: Colors.black45,
-                fontSize: 16.0),
+            style: TextStyle(fontFamily: "Sofia", fontWeight: FontWeight.w400, color: Colors.black45, fontSize: 16.0),
           )
         ],
       ),
@@ -146,7 +141,7 @@ class _HomeState extends State<Home> {
         appBar: AppBar(
           backgroundColor: Colors.white,
           title: Text(
-            "Goddess Guild",
+            "_goddessGuild()",
             style: TextStyle(
                 fontFamily: "Sofia",
                 fontWeight: FontWeight.w800,
@@ -157,8 +152,8 @@ class _HomeState extends State<Home> {
           centerTitle: false,
           elevation: 0.0,
           actions: <Widget>[
-            photoProfile(
-              userId: widget.userId,
+            profile_photo(
+              user_id: widget.user_id,
             )
           ],
         ),
@@ -177,7 +172,7 @@ class _HomeState extends State<Home> {
                       onTap: () {
                         Navigator.of(context).push(PageRouteBuilder(
                             pageBuilder: (_, __, ___) => new searchPage(
-                                  idUser: widget.userId,
+                                  idUser: widget.user_id,
                                 )));
                       },
                       child: search()),
@@ -187,32 +182,23 @@ class _HomeState extends State<Home> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text("Goddess Events",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontFamily: "Sofia",
-                              fontSize: 17.0)),
+                      Text("Goddesses Needed For These Events!",
+                          style: TextStyle(fontWeight: FontWeight.w600, fontFamily: "Sofia", fontSize: 17.0)),
                       InkWell(
                           onTap: () {
-                            Navigator.of(context).push(PageRouteBuilder(
-                                pageBuilder: (_, __, ___) =>
-                                    new allPopularEvents()));
+                            Navigator.of(context)
+                                .push(PageRouteBuilder(pageBuilder: (_, __, ___) => new allPopularEvents()));
                           },
                           child: Text("View all",
                               style: TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  fontFamily: "Sofia",
-                                  color: Colors.deepPurpleAccent)))
+                                  fontWeight: FontWeight.w400, fontFamily: "Sofia", color: Colors.deepPurpleAccent)))
                     ],
                   ),
                   Padding(
                       padding: EdgeInsets.only(bottom: 0.0),
                       child: StreamBuilder(
-                        stream: FirebaseFirestore.instance
-                            .collection("event")
-                            .snapshots(),
-                        builder: (BuildContext ctx,
-                            AsyncSnapshot<QuerySnapshot> snapshot) {
+                        stream: FirebaseFirestore.instance.collection("event").snapshots(),
+                        builder: (BuildContext ctx, AsyncSnapshot<QuerySnapshot> snapshot) {
                           if (loadImage) {
                             return _loadingDataHeader(ctx);
                           } else {
@@ -220,7 +206,7 @@ class _HomeState extends State<Home> {
                               return _loadingDataHeader(ctx);
                             } else {
                               return new cardDataFirestore(
-                                dataUser: widget.userId,
+                                user_id: widget.user_id,
                                 list: snapshot.data.docs,
                               );
                             }
@@ -237,18 +223,15 @@ class _HomeState extends State<Home> {
   }
 }
 
-class photoProfile extends StatelessWidget {
-  String userId;
+class profile_photo extends StatelessWidget {
+  String user_id;
 
-  photoProfile({this.userId});
+  profile_photo({this.user_id});
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: FirebaseFirestore.instance
-            .collection('users')
-            .doc(userId)
-            .snapshots(),
+        stream: FirebaseFirestore.instance.collection('user').doc(user_id).snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return new Text("Loading");
@@ -268,11 +251,9 @@ class photoProfile extends StatelessWidget {
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(40.0)),
                           image: DecorationImage(
-                              image: NetworkImage(userDocument[
-                                          "photoProfile"] !=
-                                      null
-                                  ? userDocument["photoProfile"]
-                                  : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png"),
+                              image: NetworkImage(userDocument["profile_photo"] != null
+                                  ? userDocument["profile_photo"]
+                                  : EMPTY_PROFILE),
                               fit: BoxFit.cover)),
                     ),
                   )),
@@ -296,12 +277,7 @@ class search extends StatelessWidget {
         decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.all(Radius.circular(5.0)),
-            boxShadow: [
-              BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 5.0,
-                  spreadRadius: 0.0)
-            ]),
+            boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 5.0, spreadRadius: 0.0)]),
         child: Padding(
           padding: const EdgeInsets.only(left: 15.0, right: 15.0),
           child: Row(
@@ -314,12 +290,9 @@ class search extends StatelessWidget {
                 width: 10.0,
               ),
               Text(
-                "Find on event",
-                style: TextStyle(
-                    fontFamily: "Sofia",
-                    fontWeight: FontWeight.w400,
-                    color: Colors.black45,
-                    fontSize: 16.0),
+                "Find events",
+                style:
+                    TextStyle(fontFamily: "Sofia", fontWeight: FontWeight.w400, color: Colors.black45, fontSize: 16.0),
               )
             ],
           ),
@@ -341,10 +314,11 @@ Widget _loadingDataHeader(BuildContext context) {
 }
 
 class cardDataFirestore extends StatelessWidget {
-  String dataUser;
-  cardDataFirestore({this.dataUser, this.list});
-
+  final String user_id;
   final List<DocumentSnapshot> list;
+
+  cardDataFirestore({this.user_id, this.list});
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -352,39 +326,15 @@ class cardDataFirestore extends StatelessWidget {
         primary: false,
         itemCount: list.length,
         itemBuilder: (context, i) {
-          String title = list[i].data()['title'].toString();
-          String category = list[i].data()['category'].toString();
-          String imageUrl = list[i].data()['imageUrl'].toString();
-          String id = list[i].data()['id'].toString();
-          String description = list[i].data()['desc1'].toString();
-          String price = list[i].data()['price'].toString();
-          String hours = list[i].data()['time'].toString();
-          String date = list[i].data()['date'].toString();
-          String location = list[i].data()['place'].toString();
-          String description2 = list[i].data()['desc2'].toString();
-          String description3 = list[i].data()['desc3'].toString();
+          GGEvent ggEvent = GGEvent.fromMap(list[i].data());
+          String doc_id = list[i].id;
 
           return InkWell(
             onTap: () {
               Navigator.of(context).push(PageRouteBuilder(
-                  pageBuilder: (_, __, ___) => new newsHeaderListDetail(
-                        category: category,
-                        desc: description,
-                        price: price,
-                        imageUrl: imageUrl,
-                        index: list[i].reference,
-                        time: hours,
-                        date: date,
-                        place: location,
-                        title: title,
-                        id: id,
-                        userId: dataUser,
-                        desc2: description2,
-                        desc3: description3,
-                      ),
+                  pageBuilder: (_, __, ___) => new eventListDetail(ggEvent: ggEvent, uid: user_id),
                   transitionDuration: Duration(milliseconds: 600),
-                  transitionsBuilder:
-                      (_, Animation<double> animation, __, Widget child) {
+                  transitionsBuilder: (_, Animation<double> animation, __, Widget child) {
                     return Opacity(
                       opacity: animation.value,
                       child: child,
@@ -396,23 +346,19 @@ class cardDataFirestore extends StatelessWidget {
               child: Stack(
                 children: <Widget>[
                   Hero(
-                    tag: 'hero-tag-$id',
+                    tag: 'hero-tag-' + ggEvent.doc_id,
                     child: Material(
                       child: Container(
                         height: 390.0,
                         width: double.infinity,
                         decoration: BoxDecoration(
                             color: Colors.grey[300],
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(10.0)),
-                            image: DecorationImage(
-                                image: NetworkImage(imageUrl),
-                                fit: BoxFit.cover),
+                            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                            image: DecorationImage(image: NetworkImage(
+                                ggEvent.image_url
+                            ), fit: BoxFit.cover),
                             boxShadow: [
-                              BoxShadow(
-                                  color: Colors.black12.withOpacity(0.1),
-                                  spreadRadius: 0.2,
-                                  blurRadius: 0.5)
+                              BoxShadow(color: Colors.black12.withOpacity(0.1), spreadRadius: 0.2, blurRadius: 0.5)
                             ]),
                       ),
                     ),
@@ -421,12 +367,8 @@ class cardDataFirestore extends StatelessWidget {
                     padding: EdgeInsets.only(top: 40.0),
                     child: Container(
                       width: 210.0,
-                      decoration:
-                          BoxDecoration(color: Colors.white, boxShadow: [
-                        BoxShadow(
-                            color: Colors.black12.withOpacity(0.1),
-                            spreadRadius: 0.2,
-                            blurRadius: 0.5)
+                      decoration: BoxDecoration(color: Colors.white, boxShadow: [
+                        BoxShadow(color: Colors.black12.withOpacity(0.1), spreadRadius: 0.2, blurRadius: 0.5)
                       ]),
                       child: Padding(
                         padding: const EdgeInsets.only(left: 15.0, top: 15.0),
@@ -435,15 +377,12 @@ class cardDataFirestore extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                              title,
-                              style: TextStyle(
-                                  fontSize: 19.0,
-                                  fontFamily: "Sofia",
-                                  fontWeight: FontWeight.w800),
+                              ggEvent.title,
+                              style: TextStyle(fontSize: 19.0, fontFamily: "Sofia", fontWeight: FontWeight.w800),
                             ),
                             SizedBox(height: 4.0),
                             Text(
-                              location,
+                              ggEvent.address,
                               style: TextStyle(
                                   fontSize: 14.0,
                                   fontFamily: "Sofia",
@@ -452,7 +391,7 @@ class cardDataFirestore extends StatelessWidget {
                             ),
                             SizedBox(height: 4.0),
                             Text(
-                              date,
+                              ggEvent.date,
                               style: TextStyle(
                                   fontSize: 14.0,
                                   fontFamily: "Sofia",
@@ -463,21 +402,14 @@ class cardDataFirestore extends StatelessWidget {
                               height: 10.0,
                             ),
                             Padding(
-                                padding:
-                                    EdgeInsets.only(top: 3.0, bottom: 30.0),
-                                child: StreamBuilder(
-                                  stream: FirebaseFirestore.instance
-                                      .collection("JoinEvent")
-                                      .doc("user")
-                                      .collection(title)
-                                      .snapshots(),
-                                  builder: (BuildContext ctx,
-                                      AsyncSnapshot<QuerySnapshot> snapshot) {
-                                    if (!snapshot.hasData) {
+                                padding: EdgeInsets.only(top: 3.0, bottom: 30.0),
+                                child: FutureBuilder<List<QueryDocumentSnapshot>>(
+                                  future: getAllGoddessesAtEvent(ggEvent.doc_id),
+                                  builder: (context, AsyncSnapshot<List<QueryDocumentSnapshot>> ggUserList) {
+                                    if (!ggUserList.hasData) {
                                       return CircularProgressIndicator();
                                     } else {
-                                      return new joinEvent(
-                                          list: snapshot.data.docs);
+                                      return new danceAtEvent(ggEvent: ggEvent, eventDancerList: ggUserList.data);
                                     }
                                   },
                                 )),
@@ -494,9 +426,11 @@ class cardDataFirestore extends StatelessWidget {
   }
 }
 
-class joinEvent extends StatelessWidget {
-  joinEvent({this.list});
-  final List<DocumentSnapshot> list;
+class danceAtEvent extends StatelessWidget {
+  danceAtEvent({this.ggEvent, this.eventDancerList});
+
+  final GGEvent ggEvent;
+  final List<QueryDocumentSnapshot> eventDancerList;
 
   @override
   Widget build(BuildContext context) {
@@ -509,12 +443,8 @@ class joinEvent extends StatelessWidget {
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 padding: EdgeInsets.only(top: 0.0, left: 5.0, right: 5.0),
-                itemCount: list.length > 3 ? 3 : list.length,
+                itemCount: eventDancerList.length > 3 ? 3 : eventDancerList.length,
                 itemBuilder: (context, i) {
-                  String _title = list[i].data()['name'].toString();
-                  String _npm = list[i].data()['country'].toString();
-                  String _img = list[i].data()['photoProfile'].toString();
-
                   return Row(
                     children: <Widget>[
                       Padding(
@@ -523,11 +453,13 @@ class joinEvent extends StatelessWidget {
                           height: 35.0,
                           width: 35.0,
                           decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(70.0)),
-                              image: DecorationImage(
-                                  image: NetworkImage(_img),
-                                  fit: BoxFit.cover)),
+                              borderRadius: BorderRadius.all(Radius.circular(70.0)),
+                              image: DecorationImage(image: eventDancerList[i].data()['profile_photo'] == null ?
+                              AssetImage("assets/image/emptyProfilePicture.png")
+                              : NetworkImage(
+                                  eventDancerList[i].data()['profile_photo']),
+                                  fit: BoxFit.cover
+                              )),
                         ),
                       ),
                     ],
@@ -537,20 +469,22 @@ class joinEvent extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.only(left: 135.0),
-          child: Container(
-            height: 38.0,
-            width: 38.0,
-            decoration: BoxDecoration(
-                border: Border.all(color: Colors.deepPurpleAccent, width: 1.0),
-                borderRadius: BorderRadius.all(Radius.circular(60.0))),
-            child: Center(
-              child: Text(
-                "+" + list.length.toString(),
-                style: TextStyle(fontFamily: "Popins"),
+          child:
+            Container(
+              height: 40.0,
+              width: 40.0,
+              decoration: BoxDecoration(
+                  border: Border.all(color: Colors.deepPurpleAccent, width: 1.0),
+                  borderRadius: BorderRadius.all(Radius.circular(60.0))),
+              child: Center(
+                child: Text(
+                  eventDancerList.length.toString() +
+                  "/" + ggEvent.goddesses_needed.toString(),
+                  style: TextStyle(fontFamily: "Popins"),
+                ),
               ),
-            ),
           ),
-        )
+        ),
       ],
     );
   }
@@ -565,12 +499,7 @@ Widget cardHeaderLoading(BuildContext context) {
       decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(10.0)),
           color: Colors.grey[300],
-          boxShadow: [
-            BoxShadow(
-                color: Colors.black12.withOpacity(0.1),
-                spreadRadius: 0.2,
-                blurRadius: 0.5)
-          ]),
+          boxShadow: [BoxShadow(color: Colors.black12.withOpacity(0.1), spreadRadius: 0.2, blurRadius: 0.5)]),
       child: Shimmer.fromColors(
         baseColor: Colors.black38,
         highlightColor: Colors.white,
@@ -581,12 +510,9 @@ Widget cardHeaderLoading(BuildContext context) {
               child: Container(
                 height: 210.0,
                 width: 180.0,
-                decoration: BoxDecoration(color: Colors.black12, boxShadow: [
-                  BoxShadow(
-                      color: Colors.black12.withOpacity(0.1),
-                      spreadRadius: 0.2,
-                      blurRadius: 0.5)
-                ]),
+                decoration: BoxDecoration(
+                    color: Colors.black12,
+                    boxShadow: [BoxShadow(color: Colors.black12.withOpacity(0.1), spreadRadius: 0.2, blurRadius: 0.5)]),
                 child: Padding(
                   padding: const EdgeInsets.only(top: 30.0, left: 10.0),
                   child: Column(

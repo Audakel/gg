@@ -124,13 +124,15 @@ class _SplashScreenState extends State<SplashScreen> {
             PageRouteBuilder(pageBuilder: (_, __, ___) => onBoarding()));
       } else {
         FirebaseFirestore.instance
-            .collection("users")
+            .collection("user")
             .doc(currentUser.uid)
             .get()
-            .then((DocumentSnapshot result) => Navigator.pushReplacement(
+            .then((DocumentSnapshot result) =>
+            Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => bottomNavBar(
+                    builder: (context) =>
+                        bottomNavBar(
                           idUser: currentUser.uid,
                         ))))
             .catchError((err) => print(err));
@@ -140,49 +142,41 @@ class _SplashScreenState extends State<SplashScreen> {
 
   /// Code Create UI Splash Screen
   Widget build(BuildContext context) {
-    ///
-    /// Check connectivity
-    ///
-    return
+    return Scaffold(
+        backgroundColor: Colors.black,
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: const <Widget>[
 
-        ///
-        /// Layout if user connect internet
-        ///
-
-        Scaffold(
-      backgroundColor: Colors.white,
-      body: Container(
-        child: Container(
-          decoration: BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage(
-                    "assets/image/cover.png",
-                  ),
-                  fit: BoxFit.cover)),
-          child: Center(
-            child: SingleChildScrollView(
-              child: Container(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      "Event Country",
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.w200,
-                        fontSize: 36.0,
-                        letterSpacing: 1.5,
-                        color: Colors.white,
-                      ),
-                    )
-                  ],
-                ),
+            Text(
+              "_goddessGuild()",
+              style: TextStyle(
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.w600,
+                fontSize: 40.0,
+                letterSpacing: 1.5,
+                color: Colors.white,
               ),
             ),
-          ),
-        ),
-      ),
+            Image(
+                image: AssetImage(
+                    'assets/icon/masks/all.jpg'
+                )
+            ),
+            Text(
+              "Decentralized Live Entertainment",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.w300,
+                fontSize: 25.0,
+                letterSpacing: 1,
+                color: Colors.white,
+              ),
+            ),
+
+          ],
+        )
     );
   }
 }

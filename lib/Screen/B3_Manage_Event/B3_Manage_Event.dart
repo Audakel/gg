@@ -5,11 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:giffy_dialog/giffy_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
-
+import 'package:goddessGuild/db_service.dart';
+import 'package:goddessGuild/models.dart';
 import 'Manage_Event_Detail.dart';
 
 class favorite extends StatefulWidget {
   String uid;
+
   favorite({this.uid});
 
   _favoriteState createState() => _favoriteState();
@@ -76,34 +78,22 @@ class _favoriteState extends State<favorite> {
           children: <Widget>[
             Padding(
                 padding: EdgeInsets.only(top: 0.0, bottom: 0.0),
-                child: StreamBuilder(
-                  stream: FirebaseFirestore.instance
-                      .collection("users")
-                      .doc(widget.uid)
-                      .collection('Join Event')
-                      .snapshots(),
-                  builder: (
-                    BuildContext ctx,
-                    AsyncSnapshot<QuerySnapshot> snapshot,
-                  ) {
-                    if (!snapshot.hasData) {
-                      return noItem();
-                    } else {
-                      if (snapshot.data.docs.isEmpty) {
+                child: FutureBuilder<List<GGEvent>>(
+                    future: getAllEventsOfAGoddess(),
+                    builder: (
+                      BuildContext ctx,
+                      AsyncSnapshot<List<GGEvent>> ggEvents,
+                    ) {
+                      if (!ggEvents.hasData) {
                         return noItem();
-                      } else {
-                        if (loadImage) {
-                          return _loadingDataList(
-                              ctx, snapshot.data.docs.length);
-                        } else {
-                          return new dataFirestore(list: snapshot.data.docs);
-                        }
-
-                        //  return  new noItem();
                       }
-                    }
-                  },
-                )),
+                      //return _loadingDataList(ctx, snapshot.data.docs.length);
+                      else {
+                        return new dataFirestore(list: ggEvents);
+                      }
+
+                      //  return  new noItem();
+                    })),
             SizedBox(
               height: 40.0,
             )
@@ -134,9 +124,7 @@ Widget cardHeaderLoading(BuildContext context) {
               Container(
                 height: 17.0,
                 width: 70.0,
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(5.0))),
+                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(5.0))),
               ),
               SizedBox(
                 height: 25.0,
@@ -144,9 +132,7 @@ Widget cardHeaderLoading(BuildContext context) {
               Container(
                 height: 20.0,
                 width: 150.0,
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(5.0))),
+                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(5.0))),
               ),
               SizedBox(
                 height: 10.0,
@@ -154,9 +140,7 @@ Widget cardHeaderLoading(BuildContext context) {
               Container(
                 height: 20.0,
                 width: 250.0,
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(5.0))),
+                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(5.0))),
               ),
               SizedBox(
                 height: 10.0,
@@ -164,9 +148,7 @@ Widget cardHeaderLoading(BuildContext context) {
               Container(
                 height: 20.0,
                 width: 150.0,
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(5.0))),
+                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(5.0))),
               ),
             ],
           ),
@@ -203,12 +185,7 @@ Widget loadingCard(BuildContext ctx) {
       decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.all(Radius.circular(10.0)),
-          boxShadow: [
-            BoxShadow(
-                color: Colors.black12.withOpacity(0.1),
-                blurRadius: 3.0,
-                spreadRadius: 1.0)
-          ]),
+          boxShadow: [BoxShadow(color: Colors.black12.withOpacity(0.1), blurRadius: 3.0, spreadRadius: 1.0)]),
       child: Shimmer.fromColors(
         baseColor: Colors.black38,
         highlightColor: Colors.white,
@@ -218,9 +195,7 @@ Widget loadingCard(BuildContext ctx) {
             width: double.infinity,
             decoration: BoxDecoration(
               color: Colors.black12,
-              borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(10.0),
-                  topLeft: Radius.circular(10.0)),
+              borderRadius: BorderRadius.only(topRight: Radius.circular(10.0), topLeft: Radius.circular(10.0)),
             ),
             child: Padding(
               padding: const EdgeInsets.only(top: 10.0, right: 10.0),
@@ -297,6 +272,7 @@ Widget loadingCard(BuildContext ctx) {
 
 class dataFirestore extends StatelessWidget {
   dataFirestore({this.list});
+
   final List<DocumentSnapshot> list;
 
   @override
@@ -330,15 +306,15 @@ class dataFirestore extends StatelessWidget {
         String _title = list[i].data()['title'].toString();
         String _date = list[i].data()['date'].toString();
         String _time = list[i].data()['time'].toString();
-        String _img = list[i].data()['imageUrl'].toString();
+        String _img = list[i].data()['image_url'].toString();
         String _desc = list[i].data()['desc1'].toString();
         String _desc2 = list[i].data()['desc2'].toString();
         String _desc3 = list[i].data()['desc3'].toString();
         String _price = list[i].data()['price'].toString();
         String _category = list[i].data()['category'].toString();
         String _id = list[i].data()['id'].toString();
-        String _place = list[i].data()['place'].toString();
-        String _userID = list[i].data()['user'].toString();
+        String _place = list[i].data()['address'].toString();
+        String _user_id = list[i].data()['user'].toString();
 
         return Padding(
           padding: const EdgeInsets.only(top: 20.0, bottom: 0.0),
@@ -352,7 +328,7 @@ class dataFirestore extends StatelessWidget {
                             description2: _desc2,
                             description3: _desc3,
                             price: _price,
-                            imageUrl: _img,
+                            image_url: _img,
                             index: list[i].reference,
                             time: _time,
                             date: _date,
@@ -361,8 +337,7 @@ class dataFirestore extends StatelessWidget {
                             id: _id,
                           ),
                       transitionDuration: Duration(milliseconds: 600),
-                      transitionsBuilder:
-                          (_, Animation<double> animation, __, Widget child) {
+                      transitionsBuilder: (_, Animation<double> animation, __, Widget child) {
                         return Opacity(
                           opacity: animation.value,
                           child: child,
@@ -377,12 +352,7 @@ class dataFirestore extends StatelessWidget {
                   decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.black12.withOpacity(0.2),
-                            spreadRadius: 3.0,
-                            blurRadius: 10.0)
-                      ]),
+                      boxShadow: [BoxShadow(color: Colors.black12.withOpacity(0.2), spreadRadius: 3.0, blurRadius: 10.0)]),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
@@ -393,15 +363,11 @@ class dataFirestore extends StatelessWidget {
                             height: 165.0,
                             width: double.infinity,
                             decoration: BoxDecoration(
-                              image: DecorationImage(
-                                  image: NetworkImage(_img), fit: BoxFit.cover),
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(15.0),
-                                  topRight: Radius.circular(15.0)),
+                              image: DecorationImage(image: NetworkImage(_img), fit: BoxFit.cover),
+                              borderRadius: BorderRadius.only(topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)),
                             ),
                             child: Padding(
-                              padding:
-                                  const EdgeInsets.only(top: 10.0, right: 10.0),
+                              padding: const EdgeInsets.only(top: 10.0, right: 10.0),
                               child: InkWell(
                                 onTap: () {
                                   showDialog(
@@ -413,19 +379,11 @@ class dataFirestore extends StatelessWidget {
                                             ),
                                             title: Text('Cancel this event?',
                                                 textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                    fontFamily: "Gotik",
-                                                    fontSize: 22.0,
-                                                    fontWeight:
-                                                        FontWeight.w600)),
+                                                style: TextStyle(fontFamily: "Gotik", fontSize: 22.0, fontWeight: FontWeight.w600)),
                                             description: Text(
-                                              "Are you sure you want to delete the event activity " +
-                                                  _title,
+                                              "Are you sure you want to delete the event activity " + _title,
                                               textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                  fontFamily: "Popins",
-                                                  fontWeight: FontWeight.w300,
-                                                  color: Colors.black26),
+                                              style: TextStyle(fontFamily: "Popins", fontWeight: FontWeight.w300, color: Colors.black26),
                                             ),
                                             onOkButtonPressed: () {
                                               Navigator.pop(context);
@@ -433,26 +391,17 @@ class dataFirestore extends StatelessWidget {
                                                   .collection("JoinEvent")
                                                   .doc("user")
                                                   .collection(_title)
-                                                  .doc(_userID)
+                                                  .doc(_user_id)
                                                   .delete();
 
-                                              FirebaseFirestore.instance
-                                                  .runTransaction(
-                                                      (transaction) async {
-                                                DocumentSnapshot snapshot =
-                                                    await transaction
-                                                        .get(list[i].reference);
-                                                await transaction
-                                                    .delete(snapshot.reference);
-                                                SharedPreferences prefs =
-                                                    await SharedPreferences
-                                                        .getInstance();
+                                              FirebaseFirestore.instance.runTransaction((transaction) async {
+                                                DocumentSnapshot snapshot = await transaction.get(list[i].reference);
+                                                await transaction.delete(snapshot.reference);
+                                                SharedPreferences prefs = await SharedPreferences.getInstance();
                                                 prefs.remove(_title);
                                               });
-                                              Scaffold.of(context)
-                                                  .showSnackBar(SnackBar(
-                                                content: Text(
-                                                    "Cancel event " + _title),
+                                              Scaffold.of(context).showSnackBar(SnackBar(
+                                                content: Text("Cancel event " + _title),
                                                 backgroundColor: Colors.red,
                                                 duration: Duration(seconds: 3),
                                               ));
@@ -473,8 +422,7 @@ class dataFirestore extends StatelessWidget {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(
-                            left: 10.0, right: 10.0, bottom: 13.0, top: 7.0),
+                        padding: const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 13.0, top: 7.0),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -482,16 +430,12 @@ class dataFirestore extends StatelessWidget {
                             SizedBox(height: 5.0),
                             Text(
                               _title,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 17.0,
-                                  fontFamily: "Popins"),
+                              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 17.0, fontFamily: "Popins"),
                             ),
                             Padding(
                               padding: const EdgeInsets.only(top: 0.0),
                               child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
                                   Row(children: <Widget>[
                                     Icon(
@@ -501,15 +445,11 @@ class dataFirestore extends StatelessWidget {
                                     Container(
                                         width: 120.0,
                                         child: Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 8.0),
+                                            padding: const EdgeInsets.only(left: 8.0),
                                             child: Text(
                                               _place,
-                                              style: TextStyle(
-                                                  fontSize: 14.0,
-                                                  fontFamily: "popins",
-                                                  fontWeight: FontWeight.w400,
-                                                  color: Colors.black38),
+                                              style:
+                                                  TextStyle(fontSize: 14.0, fontFamily: "popins", fontWeight: FontWeight.w400, color: Colors.black38),
                                               overflow: TextOverflow.ellipsis,
                                             )))
                                   ]),
@@ -521,15 +461,11 @@ class dataFirestore extends StatelessWidget {
                                     Container(
                                         width: 140.0,
                                         child: Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 8.0),
+                                          padding: const EdgeInsets.only(left: 8.0),
                                           child: Text(
                                             _date,
-                                            style: TextStyle(
-                                                fontSize: 14.0,
-                                                fontFamily: "popins",
-                                                fontWeight: FontWeight.w400,
-                                                color: Colors.black38),
+                                            style:
+                                                TextStyle(fontSize: 14.0, fontFamily: "popins", fontWeight: FontWeight.w400, color: Colors.black38),
                                             overflow: TextOverflow.ellipsis,
                                           ),
                                         ))
@@ -565,21 +501,15 @@ class noItem extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Padding(
-                padding:
-                    EdgeInsets.only(top: mediaQueryData.padding.top + 80.0)),
+            Padding(padding: EdgeInsets.only(top: mediaQueryData.padding.top + 80.0)),
             Image.asset(
               "assets/image/IlustrasiCart.png",
               height: 300.0,
             ),
             Padding(padding: EdgeInsets.only(bottom: 10.0)),
             Text(
-              "Haven't Joined Event",
-              style: TextStyle(
-                  fontWeight: FontWeight.w400,
-                  fontSize: 19.5,
-                  color: Colors.black26.withOpacity(0.2),
-                  fontFamily: "Popins"),
+              "Not dancing",
+              style: TextStyle(fontWeight: FontWeight.w400, fontSize: 19.5, color: Colors.black26.withOpacity(0.2), fontFamily: "Popins"),
             ),
           ],
         ),

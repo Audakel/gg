@@ -5,8 +5,8 @@ import 'package:giffy_dialog/giffy_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UpdateEventList extends StatefulWidget {
-  String userId;
-  UpdateEventList({this.userId});
+  String user_id;
+  UpdateEventList({this.user_id});
 
   @override
   _UpdateEventListState createState() => _UpdateEventListState();
@@ -55,8 +55,8 @@ class _UpdateEventListState extends State<UpdateEventList> {
                     padding: EdgeInsets.only(bottom: 0.0),
                     child: StreamBuilder(
                       stream: FirebaseFirestore.instance
-                          .collection("users")
-                          .doc(widget.userId)
+                          .collection("user")
+                          .doc(widget.user_id)
                           .collection('event')
                           .snapshots(),
                       builder: (BuildContext ctx,
@@ -69,7 +69,7 @@ class _UpdateEventListState extends State<UpdateEventList> {
                           } else {
                             return new cardDataFirestore(
                               list: snapshot.data.docs,
-                              dataUser: widget.userId,
+                              user_id: widget.user_id,
                             );
 
                             //  return  new noItem();
@@ -87,8 +87,8 @@ class _UpdateEventListState extends State<UpdateEventList> {
 }
 
 class cardDataFirestore extends StatelessWidget {
-  String dataUser;
-  cardDataFirestore({this.dataUser, this.list});
+  String user_id;
+  cardDataFirestore({this.user_id, this.list});
 
   final List<DocumentSnapshot> list;
   @override
@@ -100,12 +100,12 @@ class cardDataFirestore extends StatelessWidget {
         itemBuilder: (context, i) {
           String title = list[i].data()['title'].toString();
           String category = list[i].data()['category'].toString();
-          String imageUrl = list[i].data()['imageUrl'].toString();
+          String image_url = list[i].data()['image_url'].toString();
           String id = list[i].data()['id'].toString();
           String description = list[i].data()['desc1'].toString();
           String hours = list[i].data()['time'].toString();
           String date = list[i].data()['date'].toString();
-          String location = list[i].data()['place'].toString();
+          String location = list[i].data()['address'].toString();
 
           return InkWell(
             onTap: () {
@@ -113,14 +113,14 @@ class cardDataFirestore extends StatelessWidget {
                   pageBuilder: (_, __, ___) => new updateEvent(
                         category: category,
                         desc: description,
-                        imageUrl: imageUrl,
+                        image_url: image_url,
                         time: hours,
                         list: list[i].id,
                         date: date,
                         place: location,
                         title: title,
                         id: id,
-                        userId: dataUser,
+                        user_id: user_id,
                       ),
                   transitionDuration: Duration(milliseconds: 600),
                   transitionsBuilder:
@@ -146,7 +146,7 @@ class cardDataFirestore extends StatelessWidget {
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10.0)),
                             image: DecorationImage(
-                                image: NetworkImage(imageUrl),
+                                image: NetworkImage(image_url),
                                 fit: BoxFit.cover),
                             boxShadow: [
                               BoxShadow(
@@ -312,7 +312,7 @@ class joinEvent extends StatelessWidget {
                 itemBuilder: (context, i) {
                   String _title = list[i].data()['name'].toString();
                   String _npm = list[i].data()['country'].toString();
-                  String _img = list[i].data()['photoProfile'].toString();
+                  String _img = list[i].data()['profile_photo'].toString();
 
                   return Row(
                     children: <Widget>[

@@ -64,7 +64,7 @@ class _artGermanyState extends State<artGermany> {
                           } else {
                             return new dataFirestore(
                               list: snapshot.data.docs,
-                              dataUser: widget.idUser,
+                              user_id: widget.idUser,
                             );
                           }
                         }
@@ -175,8 +175,8 @@ Widget cardHeaderLoading(BuildContext context) {
 }
 
 class dataFirestore extends StatelessWidget {
-  String dataUser;
-  dataFirestore({this.list, this.dataUser});
+  String user_id;
+  dataFirestore({this.list, this.user_id});
   final List<DocumentSnapshot> list;
   PageVisibility pageVisibility;
 
@@ -231,13 +231,13 @@ class dataFirestore extends StatelessWidget {
             itemBuilder: (context, i) {
               String title = list[i].data()['title'].toString();
               String category = list[i].data()['category'].toString();
-              String imageUrl = list[i].data()['imageUrl'].toString();
+              String image_url = list[i].data()['image_url'].toString();
               String id = list[i].data()['id'].toString();
               String description = list[i].data()['desc1'].toString();
               String price = list[i].data()['price'].toString();
               String hours = list[i].data()['time'].toString();
               String date = list[i].data()['date'].toString();
-              String location = list[i].data()['place'].toString();
+              String location = list[i].data()['address'].toString();
               String description2 = list[i].data()['desc2'].toString();
               String description3 = list[i].data()['desc3'].toString();
 
@@ -253,7 +253,7 @@ class dataFirestore extends StatelessWidget {
                           borderRadius: BorderRadius.all(Radius.circular(12.0)),
                           color: Colors.grey[500],
                           image: DecorationImage(
-                              image: NetworkImage(imageUrl), fit: BoxFit.cover),
+                              image: NetworkImage(image_url), fit: BoxFit.cover),
                           boxShadow: [
                             BoxShadow(
                                 color: Colors.black12.withOpacity(0.1),
@@ -277,20 +277,8 @@ class dataFirestore extends StatelessWidget {
                             Navigator.of(context).push(
                               PageRouteBuilder(
                                   pageBuilder: (_, __, ___) =>
-                                      new newsHeaderListDetail(
-                                        category: category,
-                                        desc: description,
-                                        price: price,
-                                        imageUrl: imageUrl,
-                                        index: list[i].reference,
-                                        time: hours,
-                                        date: date,
-                                        place: location,
-                                        title: title,
-                                        id: id,
-                                        userId: dataUser,
-                                        desc2: description2,
-                                        desc3: description3,
+                                      new eventListDetail(
+
                                       ),
                                   transitionDuration:
                                       Duration(milliseconds: 600),
