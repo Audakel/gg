@@ -1,7 +1,7 @@
-import 'package:goddessGuild/Screen/B2_Category/Category_Place/L1/germany.dart';
-import 'package:goddessGuild/Screen/B2_Category/Category_Place/L3/unitedStates.dart';
+import 'package:goddessGuild/Screen/B2_Category/Category_Place/L1/stripclub.dart';
 import 'package:flutter/material.dart';
 
+/**
 class searchBoxEmpty extends StatefulWidget {
   String idUser;
 
@@ -155,3 +155,5 @@ class cardCountry extends StatelessWidget {
     );
   }
 }
+
+    */

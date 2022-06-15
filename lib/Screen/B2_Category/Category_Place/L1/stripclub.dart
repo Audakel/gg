@@ -3,22 +3,26 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:goddessGuild/Library/bubbleTabCustom/bubbleTab.dart';
 import 'package:goddessGuild/constants.dart';
+
 import 'package:goddessGuild/Screen/B1_Home/Home_Search/search_page.dart';
-import 'package:goddessGuild/Screen/B2_Category/Category_Place/L2/category/allBrazil.dart';
-import 'package:goddessGuild/Screen/B2_Category/Category_Place/L2/category/artBrazil.dart';
-import 'package:goddessGuild/Screen/B2_Category/Category_Place/L2/category/musicBrazil.dart';
-import 'package:goddessGuild/Screen/B2_Category/Category_Place/L2/category/sportBrazil.dart';
+import 'package:goddessGuild/Screen/B2_Category/Category_Place/L1/stripclub.dart';
+import 'package:goddessGuild/Screen/B2_Category/Category_Place/L1/category/bacheloretteEvents.dart';
+import 'package:goddessGuild/Screen/B2_Category/Category_Place/L1/category/stripclubEvents.dart';
+import 'package:goddessGuild/Screen/B2_Category/Category_Place/L1/category/bachelorEvents.dart';
+import 'package:goddessGuild/Screen/B2_Category/Page_Transformer_Card/page_transformer.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
-class brazil extends StatefulWidget {
-  String user_id;
-  brazil({this.user_id});
+import 'category/patronEventSubset.dart';
 
-  _brazilState createState() => _brazilState();
+class stripclub extends StatefulWidget {
+  String user_id, nameAppbar;
+  stripclub({this.user_id, this.nameAppbar});
+
+  _stripclubState createState() => _stripclubState();
 }
 
-class _brazilState extends State<brazil> {
+class _stripclubState extends State<stripclub> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,27 +76,27 @@ class _brazilState extends State<brazil> {
                                   ),
                                   new Tab(
                                     child: Text(
-                                      "Sport",
+                                      EVENT_TYPES[0], // bachlor party
                                       style: TextStyle(
-                                        fontSize: 11.5,
+                                        fontSize: 12,
                                         fontWeight: FontWeight.w500,
                                       ),
                                     ),
                                   ),
                                   new Tab(
                                     child: Text(
-                                      "Art",
+                                      EVENT_TYPES[1],
                                       style: TextStyle(
-                                        fontSize: 14.0,
+                                        fontSize: 10.0,
                                         fontWeight: FontWeight.w500,
                                       ),
                                     ),
                                   ),
                                   new Tab(
                                     child: Text(
-                                      "Music",
+                                      EVENT_TYPES[2],
                                       style: TextStyle(
-                                        fontSize: 14.0,
+                                        fontSize: 12.0,
                                         fontWeight: FontWeight.w500,
                                       ),
                                     ),
@@ -102,17 +106,21 @@ class _brazilState extends State<brazil> {
                         ),
                         body: new TabBarView(
                           children: [
-                            allBrazil(
+                            patronEventSubset(
                               idUser: widget.user_id,
+                              event_filter: null,
                             ),
-                            sportBrazil(
+                            patronEventSubset(
                               idUser: widget.user_id,
+                              event_filter: EVENT_TYPES[0],
                             ),
-                            artBrazil(
+                            patronEventSubset(
                               idUser: widget.user_id,
+                              event_filter: EVENT_TYPES[1],
                             ),
-                            musicBrazil(
+                            patronEventSubset(
                               idUser: widget.user_id,
+                              event_filter: EVENT_TYPES[2],
                             ),
                           ],
                         ),
@@ -138,16 +146,28 @@ class _brazilState extends State<brazil> {
                     },
                     child: Icon(Icons.clear)),
                 Text(
-                  "Level 2: Gala",
+                  widget.nameAppbar,
                   style: TextStyle(
-
                       fontFamily: "Sofia",
                       fontWeight: FontWeight.w800,
-                      fontSize: 17.0,
-                      letterSpacing: 1,
+                      fontSize: 27.0,
+                      letterSpacing: 1.5,
                       color: Colors.black),
                 ),
-
+                Padding(
+                  padding: const EdgeInsets.only(right: 20.0),
+                  child: InkWell(
+                      onTap: () {
+                        Navigator.of(context).push(PageRouteBuilder(
+                            pageBuilder: (_, __, ___) => new searchPage(
+                                  idUser: widget.user_id,
+                                )));
+                      },
+                      child: Icon(
+                        Icons.search,
+                        size: 28.0,
+                      )),
+                ),
               ],
             ),
           ),

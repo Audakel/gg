@@ -1,6 +1,5 @@
 import 'package:goddessGuild/Screen/B1_Home/Home_Search/search_page.dart';
-import 'package:goddessGuild/Screen/B2_Category/Category_Place/L1/germany.dart';
-import 'package:goddessGuild/Screen/B2_Category/Category_Place/L3/unitedStates.dart';
+import 'package:goddessGuild/Screen/B2_Category/Category_Place/L1/stripclub.dart';
 import 'package:flutter/material.dart';
 import 'needMoreLevels.dart';
 import 'package:goddessGuild/constants.dart';
@@ -23,7 +22,7 @@ class _CategoryState extends State<Category> {
       title: Padding(
         padding: const EdgeInsets.only(left: 10.0, right: 10.0),
         child: Text(
-          "Club Level",
+          "Patrons",
           style: TextStyle(
               fontFamily: "Gotik",
               fontSize: 26.0,
@@ -65,7 +64,7 @@ class _CategoryState extends State<Category> {
             InkWell(
                 onTap: () {
                   Navigator.of(context).push(PageRouteBuilder(
-                      pageBuilder: (_, __, ___) => new germany(
+                      pageBuilder: (_, __, ___) => new stripclub(
                             user_id: widget.user_id,
                             nameAppbar: EVENT_LEVELS[1],
                           )));

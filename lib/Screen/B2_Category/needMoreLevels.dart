@@ -4,10 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:goddessGuild/Library/bubbleTabCustom/bubbleTab.dart';
 import 'package:goddessGuild/constants.dart';
 import 'package:goddessGuild/Screen/B1_Home/Home_Search/search_page.dart';
-import 'package:goddessGuild/Screen/B2_Category/Category_Place/L2/category/allBrazil.dart';
-import 'package:goddessGuild/Screen/B2_Category/Category_Place/L2/category/artBrazil.dart';
-import 'package:goddessGuild/Screen/B2_Category/Category_Place/L2/category/musicBrazil.dart';
-import 'package:goddessGuild/Screen/B2_Category/Category_Place/L2/category/sportBrazil.dart';
+
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 

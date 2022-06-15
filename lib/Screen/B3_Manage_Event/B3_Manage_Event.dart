@@ -8,16 +8,17 @@ import 'package:shimmer/shimmer.dart';
 import 'package:goddessGuild/db_service.dart';
 import 'package:goddessGuild/models.dart';
 import 'Manage_Event_Detail.dart';
+import 'package:goddessGuild/gg_widgets.dart';
 
-class favorite extends StatefulWidget {
-  String uid;
+class manageEvent extends StatefulWidget {
+  final String uid;
 
-  favorite({this.uid});
+  manageEvent({this.uid});
 
-  _favoriteState createState() => _favoriteState();
+  manageEventState createState() => manageEventState();
 }
 
-class _favoriteState extends State<favorite> {
+class manageEventState extends State<manageEvent> {
   bool checkMail = true;
   String mail;
 
@@ -44,11 +45,10 @@ class _favoriteState extends State<favorite> {
 
   @override
   void initState() {
-    Timer(Duration(seconds: 3), () {
-      setState(() {
-        loadImage = false;
-      });
+    setState(() {
+      loadImage = false;
     });
+
     _function();
     // TODO: implement initState
     super.initState();
@@ -63,7 +63,7 @@ class _favoriteState extends State<favorite> {
         title: Padding(
           padding: const EdgeInsets.only(top: 15.0),
           child: Text(
-            "Manage Event",
+            "Your Upcoming Events",
             style: TextStyle(
               fontFamily: "Popins",
               letterSpacing: 1.5,
@@ -79,7 +79,7 @@ class _favoriteState extends State<favorite> {
             Padding(
                 padding: EdgeInsets.only(top: 0.0, bottom: 0.0),
                 child: FutureBuilder<List<GGEvent>>(
-                    future: getAllEventsOfAGoddess(),
+                    future: getAllWorkedEventsOfAGoddess(),
                     builder: (
                       BuildContext ctx,
                       AsyncSnapshot<List<GGEvent>> ggEvents,
@@ -87,9 +87,11 @@ class _favoriteState extends State<favorite> {
                       if (!ggEvents.hasData) {
                         return noItem();
                       }
-                      //return _loadingDataList(ctx, snapshot.data.docs.length);
-                      else {
-                        return new dataFirestore(list: ggEvents);
+                      if (loadImage) {
+                        return loadingEventsHeader(ctx);
+                      } else {
+                        //return new manageEventCard(ggEvents: ggEvents.data);
+                        return new GGEventCardList(ggEventList: ggEvents.data);
                       }
 
                       //  return  new noItem();
@@ -104,176 +106,11 @@ class _favoriteState extends State<favorite> {
   }
 }
 
-Widget cardHeaderLoading(BuildContext context) {
-  return Padding(
-    padding: const EdgeInsets.all(8.0),
-    child: Container(
-      height: 500.0,
-      width: 275.0,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-        color: Color(0xFF2C3B4F),
-      ),
-      child: Shimmer.fromColors(
-        baseColor: Color(0xFF3B4659),
-        highlightColor: Color(0xFF606B78),
-        child: Padding(
-          padding: const EdgeInsets.only(top: 320.0),
-          child: Column(
-            children: <Widget>[
-              Container(
-                height: 17.0,
-                width: 70.0,
-                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(5.0))),
-              ),
-              SizedBox(
-                height: 25.0,
-              ),
-              Container(
-                height: 20.0,
-                width: 150.0,
-                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(5.0))),
-              ),
-              SizedBox(
-                height: 10.0,
-              ),
-              Container(
-                height: 20.0,
-                width: 250.0,
-                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(5.0))),
-              ),
-              SizedBox(
-                height: 10.0,
-              ),
-              Container(
-                height: 20.0,
-                width: 150.0,
-                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(5.0))),
-              ),
-            ],
-          ),
-        ),
-      ),
-    ),
-  );
-}
+/**
+class manageEventCard extends StatelessWidget {
+  manageEventCard({this.ggEvents});
 
-///
-///
-/// Calling imageLoading animation for set a list layout
-///
-///
-Widget _loadingDataList(BuildContext context, int panjang) {
-  return Container(
-    child: ListView.builder(
-      shrinkWrap: true,
-      primary: false,
-      padding: EdgeInsets.only(top: 0.0),
-      itemCount: panjang,
-      itemBuilder: (ctx, i) {
-        return loadingCard(ctx);
-      },
-    ),
-  );
-}
-
-Widget loadingCard(BuildContext ctx) {
-  return Padding(
-    padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 20.0),
-    child: Container(
-      height: 250.0,
-      decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(10.0)),
-          boxShadow: [BoxShadow(color: Colors.black12.withOpacity(0.1), blurRadius: 3.0, spreadRadius: 1.0)]),
-      child: Shimmer.fromColors(
-        baseColor: Colors.black38,
-        highlightColor: Colors.white,
-        child: Column(children: [
-          Container(
-            height: 165.0,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: Colors.black12,
-              borderRadius: BorderRadius.only(topRight: Radius.circular(10.0), topLeft: Radius.circular(10.0)),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.only(top: 10.0, right: 10.0),
-              child: CircleAvatar(
-                  radius: 20.0,
-                  backgroundColor: Colors.black12,
-                  child: Icon(
-                    Icons.delete,
-                    color: Colors.white,
-                  )),
-            ),
-            alignment: Alignment.topRight,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(left: 15.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Container(
-                        width: 220.0,
-                        height: 25.0,
-                        color: Colors.black12,
-                      ),
-                      Padding(padding: EdgeInsets.only(top: 5.0)),
-                      Container(
-                        height: 15.0,
-                        width: 100.0,
-                        color: Colors.black12,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 5.9),
-                        child: Container(
-                          height: 12.0,
-                          width: 140.0,
-                          color: Colors.black12,
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 13.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        height: 35.0,
-                        width: 55.0,
-                        color: Colors.black12,
-                      ),
-                      Padding(padding: EdgeInsets.only(top: 8.0)),
-                      Container(
-                        height: 10.0,
-                        width: 55.0,
-                        color: Colors.black12,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          )
-        ]),
-      ),
-    ),
-  );
-}
-
-class dataFirestore extends StatelessWidget {
-  dataFirestore({this.list});
-
-  final List<DocumentSnapshot> list;
+  final List<GGEvent> ggEvents;
 
   @override
   Widget build(BuildContext context) {
@@ -301,41 +138,29 @@ class dataFirestore extends StatelessWidget {
       shrinkWrap: true,
       primary: false,
       padding: EdgeInsets.only(top: 0.0),
-      itemCount: list.length,
+      itemCount: ggEvents.length,
       itemBuilder: (context, i) {
-        String _title = list[i].data()['title'].toString();
-        String _date = list[i].data()['date'].toString();
-        String _time = list[i].data()['time'].toString();
-        String _img = list[i].data()['image_url'].toString();
-        String _desc = list[i].data()['desc1'].toString();
-        String _desc2 = list[i].data()['desc2'].toString();
-        String _desc3 = list[i].data()['desc3'].toString();
-        String _price = list[i].data()['price'].toString();
-        String _category = list[i].data()['category'].toString();
-        String _id = list[i].data()['id'].toString();
-        String _place = list[i].data()['address'].toString();
-        String _user_id = list[i].data()['user'].toString();
-
+        /**
+         * String _title = ggEvents[i].data()['title'].toString();
+        String _date = ggEvents[i].data()['date'].toString();
+        String _time = ggEvents[i].data()['time'].toString();
+        String _img = ggEvents[i].data()['image_url'].toString();
+        String _desc = ggEvents[i].data()['desc1'].toString();
+        String _desc2 = ggEvents[i].data()['desc2'].toString();
+        String _desc3 = ggEvents[i].data()['desc3'].toString();
+        String _price = ggEvents[i].data()['price'].toString();
+        String _category = ggEvents[i].data()['category'].toString();
+        String _id = ggEvents[i].data()['id'].toString();
+        String _place = ggEvents[i].data()['address'].toString();
+        String _user_id = .data()['user'].toString();
+        */
         return Padding(
           padding: const EdgeInsets.only(top: 20.0, bottom: 0.0),
           child: InkWell(
               onTap: () {
                 Navigator.of(context).push(
                   PageRouteBuilder(
-                      pageBuilder: (_, __, ___) => new eventDetailFavorite(
-                            category: _category,
-                            description: _desc,
-                            description2: _desc2,
-                            description3: _desc3,
-                            price: _price,
-                            image_url: _img,
-                            index: list[i].reference,
-                            time: _time,
-                            date: _date,
-                            place: _place,
-                            title: _title,
-                            id: _id,
-                          ),
+                      pageBuilder: (_, __, ___) => new manageEventDetail(ggEvents[i]),
                       transitionDuration: Duration(milliseconds: 600),
                       transitionsBuilder: (_, Animation<double> animation, __, Widget child) {
                         return Opacity(
@@ -395,7 +220,7 @@ class dataFirestore extends StatelessWidget {
                                                   .delete();
 
                                               FirebaseFirestore.instance.runTransaction((transaction) async {
-                                                DocumentSnapshot snapshot = await transaction.get(list[i].reference);
+                                                DocumentSnapshot snapshot = await transaction.get(ggEvents[i].reference);
                                                 await transaction.delete(snapshot.reference);
                                                 SharedPreferences prefs = await SharedPreferences.getInstance();
                                                 prefs.remove(_title);
@@ -485,6 +310,14 @@ class dataFirestore extends StatelessWidget {
     ));
   }
 }
+
+
+ */
+
+
+
+
+
 
 ///
 ///

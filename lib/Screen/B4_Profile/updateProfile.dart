@@ -1,105 +1,59 @@
-import 'package:goddessGuild/Screen/Bottom_Nav_Bar/bottomNavBar.dart';
-import 'package:flutter/material.dart';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:goddessGuild/db_service.dart';
+import 'package:goddessGuild/models.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:path/path.dart';
 import 'dart:async';
+import 'package:goddessGuild/constants.dart';
 
 class updateProfile extends StatefulWidget {
-  String name, password, country, profile_photo, uid, city;
-  updateProfile(
-      {this.country, this.name, this.profile_photo, this.uid, this.city});
-
+  updateProfile();
   _updateProfileState createState() => _updateProfileState();
 }
 
 class _updateProfileState extends State<updateProfile> {
-  TextEditingController nameController, countryController, cityController;
-  String name = "";
-  String country = "";
-  String city = "";
-  var profilePicUrl;
+  TextEditingController nameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController cityController = TextEditingController();
 
-  File _image;
-  String filename;
+  ImagePicker _picker = ImagePicker();
+  File photoLocal = null;
+
+  String network_photo = EMPTY_PROFILE;
+
+  GGUser ggUser;
+
+  void getUserInfo() async {
+    ggUser = await getGGUser();
+
+    nameController.text = ggUser.name;
+    emailController.text = ggUser.email;
+    cityController.text = ggUser.city;
+    network_photo = ggUser.profile_photo;
+
+    setState(() {});
+  }
 
   @override
   void initState() {
-    if (profilePicUrl == null) {
-      setState(() {
-        profilePicUrl = widget.profile_photo;
-      });
-    }
-    nameController = TextEditingController(text: widget.name);
-    countryController = TextEditingController(text: widget.country);
-    cityController = TextEditingController(text: widget.city);
-    // TODO: implement initState
+    getUserInfo();
+
     super.initState();
   }
 
-  Future getImage() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+  Future pickImage({source = ImageSource.gallery}) async {
+    // ImageSource.gallery
+    // ImageSource.camera
+    final pickedFile = await _picker.getImage(source: ImageSource.gallery);
 
-    setState(() {
-      _image = image;
-      print('Image Path $_image');
-    });
-  }
+    if (pickedFile != null) {
+      photoLocal = File(pickedFile.path);
+      network_photo = await uploadFileToDB(photoLocal, "user_profile");
+    } else {
+      print('No image selected.');
+    }
 
-  Future uploadPic(BuildContext context) async {
-    // String fileName = basename(_image.path);
-    // StorageReference firebaseStorageRef =
-    //     FirebaseStorage.instance.ref().child(fileName);
-    // StorageUploadTask uploadTask = firebaseStorageRef.putFile(_image);
-    // var dowurl = await (await uploadTask.onComplete).ref.getDownloadURL();
-    // profilePicUrl = dowurl.toString();
-    // setState(() {
-    //   print("Profile Picture uploaded");
-    //   Scaffold.of(context)
-    //       .showSnackBar(SnackBar(content: Text('Profile Picture Uploaded')));
-    // });
-  }
-
-  Future selectPhoto() async {
-    await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
-      setState(() {
-        _image = image;
-        filename = basename(_image.path);
-        uploadImage();
-      });
-    });
-  }
-
-  Future uploadImage() async {
-    // StorageReference firebaseStorageRef =
-    //     FirebaseStorage.instance.ref().child(filename);
-
-    // StorageUploadTask uploadTask = firebaseStorageRef.putFile(_image);
-
-    // var dowurl = await (await uploadTask.onComplete).ref.getDownloadURL();
-    // await uploadTask.onComplete;
-    // print('File Uploaded');
-    // profilePicUrl = dowurl.toString();
-    // setState(() {
-    //   profilePicUrl = dowurl.toString();
-    // });
-    // print("download url = $profilePicUrl");
-    // return profilePicUrl;
-  }
-
-  updateData() async {
-    await FirebaseFirestore.instance
-        .collection('user')
-        .doc(widget.uid)
-        .update({
-      "name": nameController.text,
-      "country": countryController.text,
-      'profile_photo': profilePicUrl.toString(),
-      "city": cityController.text
-    });
+    setState(() {});
   }
 
   @override
@@ -143,20 +97,19 @@ class _updateProfileState extends State<updateProfile> {
                               blurRadius: 10.0,
                               spreadRadius: 4.0)
                         ]),
-                    child: _image == null
-                        ? new Stack(
+                    child: Stack(
                             children: <Widget>[
                               CircleAvatar(
                                 backgroundColor: Colors.blueAccent,
                                 radius: 170.0,
                                 backgroundImage:
-                                    NetworkImage(widget.profile_photo),
+                                    NetworkImage(network_photo),
                               ),
                               Align(
                                 alignment: Alignment.bottomRight,
                                 child: InkWell(
                                   onTap: () {
-                                    selectPhoto();
+                                    pickImage();
                                   },
                                   child: Container(
                                     height: 45.0,
@@ -177,10 +130,6 @@ class _updateProfileState extends State<updateProfile> {
                                 ),
                               ),
                             ],
-                          )
-                        : new CircleAvatar(
-                            backgroundImage: new FileImage(_image),
-                            radius: 220.0,
                           ),
                   ),
                   SizedBox(
@@ -193,131 +142,51 @@ class _updateProfileState extends State<updateProfile> {
               height: 50.0,
             ),
             Padding(
-              padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-              child: Container(
-                height: 50.0,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                          blurRadius: 10.0,
-                          color: Colors.black12.withOpacity(0.1)),
-                    ],
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(40.0))),
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-                    child: Theme(
-                      data: ThemeData(
-                        highlightColor: Colors.white,
-                        hintColor: Colors.white,
-                      ),
-                      child: TextFormField(
-                          controller: nameController,
-                          decoration: InputDecoration(
-                            hintText: 'Name',
-                            enabledBorder: new UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Colors.white,
-                                  width: 1.0,
-                                  style: BorderStyle.none),
-                            ),
-                          )),
-                    ),
-                  ),
-                ),
+              padding: const EdgeInsets.only(top: 10, bottom: 10, left: 20.0, right: 20.0),
+              child: TextFormField(
+                controller: nameController,
+                keyboardType: TextInputType.text,
+                decoration: InputDecoration(labelText: 'Name', border: OutlineInputBorder()),
+                validator: (value) => (value == null ? 'Cannot be empty' : null),
               ),
-            ),
-            SizedBox(
-              height: 30.0,
             ),
             Padding(
-              padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-              child: Container(
-                height: 50.0,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                          blurRadius: 10.0,
-                          color: Colors.black12.withOpacity(0.1)),
-                    ],
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(40.0))),
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-                    child: Theme(
-                      data: ThemeData(
-                        highlightColor: Colors.white,
-                        hintColor: Colors.white,
-                      ),
-                      child: TextFormField(
-                          controller: countryController,
-                          decoration: InputDecoration(
-                            hintText: 'country',
-                            enabledBorder: new UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Colors.white,
-                                  width: 1.0,
-                                  style: BorderStyle.none),
-                            ),
-                          )),
-                    ),
-                  ),
-                ),
+              padding: const EdgeInsets.only(top: 10, bottom: 10, left: 20.0, right: 20.0),
+              child: TextFormField(
+                controller: emailController,
+                keyboardType: TextInputType.text,
+                decoration: InputDecoration(labelText: 'Email', border: OutlineInputBorder()),
+                validator: (value) => (value == null ? 'Cannot be empty' : null),
               ),
             ),
-            SizedBox(
-              height: 30.0,
-            ),
+
             Padding(
-              padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-              child: Container(
-                height: 50.0,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                          blurRadius: 10.0,
-                          color: Colors.black12.withOpacity(0.1)),
-                    ],
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(40.0))),
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-                    child: Theme(
-                      data: ThemeData(
-                        highlightColor: Colors.white,
-                        hintColor: Colors.white,
-                      ),
-                      child: TextFormField(
-                          controller: cityController,
-                          decoration: InputDecoration(
-                            hintText: 'City',
-                            enabledBorder: new UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Colors.white,
-                                  width: 1.0,
-                                  style: BorderStyle.none),
-                            ),
-                          )),
-                    ),
-                  ),
-                ),
+              padding: const EdgeInsets.only(top: 10, bottom: 10, left: 20.0, right: 20.0),
+              child: TextFormField(
+                controller: cityController,
+                keyboardType: TextInputType.text,
+                decoration: InputDecoration(labelText: 'City', border: OutlineInputBorder()),
+                validator: (value) => (value == null ? 'Cannot be empty' : null),
               ),
             ),
+
+
             SizedBox(
-              height: 80.0,
+              height: 40.0,
             ),
             Padding(
               padding: const EdgeInsets.only(left: 15.0, right: 15.0),
               child: InkWell(
-                onTap: () {
-                  updateData();
-                  //  uploadImage();
+                onTap: () async {
+                  ggUser.name = nameController.text;
+                  ggUser.email = emailController.text;
+                  ggUser.city = cityController.text;
+                  ggUser.profile_photo = network_photo;
+
+                  await updateGGUser(ggUser).catchError((err) {
+                    print(err);
+                  });
+
                   _showDialog(context);
                 },
                 child: Container(

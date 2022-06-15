@@ -1,42 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:goddessGuild/models.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class eventDetailFavorite extends StatefulWidget {
-  final String title,
-      user_id,
-      category,
-      image_url,
-      description,
-      price,
-      time,
-      date,
-      place,
-      id,
-      description2,
-      description3;
-  final index;
+class manageEventDetail extends StatefulWidget {
+  final GGEvent ggEvent;
 
-  eventDetailFavorite(
-      {this.id,
-      this.category,
-      this.description,
-      this.place,
-      this.image_url,
-      this.index,
-      this.time,
-      this.date,
-      this.title,
-      this.user_id,
-      this.description2,
-      this.description3,
-      this.price});
+  manageEventDetail({this.ggEvent});
 
   @override
-  _eventDetailFavoriteState createState() => _eventDetailFavoriteState();
+  manageEventDetailState createState() => manageEventDetailState();
 }
 
-class _eventDetailFavoriteState extends State<eventDetailFavorite> {
+class manageEventDetailState extends State<manageEventDetail> {
   @override
   Widget build(BuildContext context) {
     double _height = MediaQuery.of(context).size.height;
@@ -52,9 +28,10 @@ class _eventDetailFavoriteState extends State<eventDetailFavorite> {
             SliverPersistentHeader(
               delegate: MySliverAppBar(
                   expandedHeight: _height - 40.0,
-                  img: widget.image_url,
-                  title: widget.title,
-                  id: widget.id),
+                  img: widget.ggEvent.image_url,
+                  title: widget.ggEvent.title,
+              //    id: widget.ggEvent.id
+              ),
               pinned: true,
             ),
 
@@ -66,7 +43,7 @@ class _eventDetailFavoriteState extends State<eventDetailFavorite> {
                   Padding(
                     padding: EdgeInsets.only(top: 30.0, left: 20.0),
                     child: Text(
-                      widget.title,
+                      widget.ggEvent.title,
                       style: TextStyle(
                           fontSize: 20.0,
                           fontWeight: FontWeight.w400,
@@ -89,7 +66,7 @@ class _eventDetailFavoriteState extends State<eventDetailFavorite> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Text(
-                                widget.date,
+                                widget.ggEvent.date,
                                 style: TextStyle(
                                     fontSize: 16.0,
                                     fontWeight: FontWeight.w500,
@@ -97,7 +74,7 @@ class _eventDetailFavoriteState extends State<eventDetailFavorite> {
                                     fontFamily: "Popins"),
                               ),
                               Text(
-                                widget.time,
+                                widget.ggEvent.time_start,
                                 style: TextStyle(
                                     fontSize: 15.0,
                                     fontWeight: FontWeight.w400,
@@ -132,7 +109,7 @@ class _eventDetailFavoriteState extends State<eventDetailFavorite> {
                                     fontFamily: "Popins"),
                               ),
                               Text(
-                                widget.place,
+                                widget.ggEvent.address,
                                 style: TextStyle(
                                     fontSize: 15.0,
                                     fontWeight: FontWeight.w400,
@@ -157,7 +134,7 @@ class _eventDetailFavoriteState extends State<eventDetailFavorite> {
                         Padding(
                           padding: const EdgeInsets.only(left: 15.0),
                           child: Text(
-                            widget.price,
+                            widget.ggEvent.price.toString(),
                             style: TextStyle(
                                 fontSize: 16.0,
                                 fontWeight: FontWeight.w500,
@@ -174,7 +151,7 @@ class _eventDetailFavoriteState extends State<eventDetailFavorite> {
                         stream: FirebaseFirestore.instance
                             .collection("JoinEvent")
                             .doc("user")
-                            .collection(widget.title)
+                            .collection(widget.ggEvent.title)
                             .snapshots(),
                         builder: (BuildContext ctx,
                             AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -208,7 +185,7 @@ class _eventDetailFavoriteState extends State<eventDetailFavorite> {
                     padding: const EdgeInsets.only(
                         top: 10.0, left: 20.0, right: 20.0, bottom: 20.0),
                     child: Text(
-                      widget.description,
+                      widget.ggEvent.desc1,
                       style: TextStyle(
                           fontFamily: "Popins",
                           color: Colors.black,

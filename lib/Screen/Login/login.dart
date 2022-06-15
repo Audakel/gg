@@ -7,7 +7,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:goddessGuild/db_service.dart';
+import 'package:goddessGuild/models.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 
 class login extends StatefulWidget {
   @override
@@ -47,15 +50,12 @@ class _loginState extends State<login> {
         width: 16.0,
         height: 16.0,
         padding: EdgeInsets.all(2.0),
-        decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(width: 2.0, color: Colors.black)),
+        decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(width: 2.0, color: Colors.black)),
         child: isSelected
             ? Container(
                 width: double.infinity,
                 height: double.infinity,
-                decoration:
-                    BoxDecoration(shape: BoxShape.circle, color: Colors.black),
+                decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.black),
               )
             : Container(),
       );
@@ -75,8 +75,7 @@ class _loginState extends State<login> {
   @override
   Widget build(BuildContext context) {
     ScreenUtil.instance = ScreenUtil.getInstance()..init(context);
-    ScreenUtil.instance =
-        ScreenUtil(width: 750, height: 1334, allowFontScaling: true);
+    ScreenUtil.instance = ScreenUtil(width: 750, height: 1334, allowFontScaling: true);
 
     ///
     /// Loading user for check email and password to firebase database
@@ -123,8 +122,7 @@ class _loginState extends State<login> {
                 ),
                 SingleChildScrollView(
                   child: Padding(
-                    padding:
-                        EdgeInsets.only(left: 28.0, right: 28.0, top: 100.0),
+                    padding: EdgeInsets.only(left: 28.0, right: 28.0, top: 100.0),
                     child: Column(
                       children: <Widget>[
                         Row(
@@ -133,8 +131,7 @@ class _loginState extends State<login> {
                             Text("Event",
                                 style: TextStyle(
                                     fontFamily: "Popins",
-                                    fontSize:
-                                        ScreenUtil.getInstance().setSp(60),
+                                    fontSize: ScreenUtil.getInstance().setSp(60),
                                     letterSpacing: 1.2,
                                     color: Colors.black87,
                                     fontWeight: FontWeight.bold))
@@ -146,22 +143,12 @@ class _loginState extends State<login> {
                         Container(
                           width: double.infinity,
                           height: ScreenUtil.getInstance().setHeight(550),
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(8.0),
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Colors.black12,
-                                    offset: Offset(0.0, 15.0),
-                                    blurRadius: 15.0),
-                                BoxShadow(
-                                    color: Colors.black12,
-                                    offset: Offset(0.0, -10.0),
-                                    blurRadius: 10.0),
-                              ]),
+                          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8.0), boxShadow: [
+                            BoxShadow(color: Colors.black12, offset: Offset(0.0, 15.0), blurRadius: 15.0),
+                            BoxShadow(color: Colors.black12, offset: Offset(0.0, -10.0), blurRadius: 10.0),
+                          ]),
                           child: Padding(
-                            padding: EdgeInsets.only(
-                                left: 0.0, right: 0.0, top: 0.0),
+                            padding: EdgeInsets.only(left: 0.0, right: 0.0, top: 0.0),
                             child: Form(
                               key: _registerFormKey,
                               child: Column(
@@ -171,15 +158,13 @@ class _loginState extends State<login> {
                                     width: 120.0,
                                     height: 45.0,
                                     decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.only(
-                                          bottomRight: Radius.circular(80.0)),
+                                      borderRadius: BorderRadius.only(bottomRight: Radius.circular(80.0)),
                                       color: Color(0xFFD898F8),
                                     ),
                                     child: Center(
                                       child: Text("Login",
                                           style: TextStyle(
-                                              fontSize: ScreenUtil.getInstance()
-                                                  .setSp(36),
+                                              fontSize: ScreenUtil.getInstance().setSp(36),
                                               fontFamily: "Popins",
                                               fontWeight: FontWeight.w600,
                                               color: Colors.white,
@@ -187,25 +172,16 @@ class _loginState extends State<login> {
                                     ),
                                   ),
                                   SizedBox(
-                                    height:
-                                        ScreenUtil.getInstance().setHeight(30),
+                                    height: ScreenUtil.getInstance().setHeight(30),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 20.0, right: 20.0),
+                                    padding: const EdgeInsets.only(left: 20.0, right: 20.0),
                                     child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: <Widget>[
                                         Text("Email",
-                                            style: TextStyle(
-                                                fontFamily: "Popins",
-                                                fontSize:
-                                                    ScreenUtil.getInstance()
-                                                        .setSp(30),
-                                                letterSpacing: .9)),
+                                            style: TextStyle(fontFamily: "Popins", fontSize: ScreenUtil.getInstance().setSp(30), letterSpacing: .9)),
                                         TextFormField(
                                           ///
                                           /// Add validator
@@ -217,12 +193,8 @@ class _loginState extends State<login> {
                                           },
                                           onSaved: (input) => _email = input,
                                           controller: loginEmailController,
-                                          keyboardType:
-                                              TextInputType.emailAddress,
-                                          style: TextStyle(
-                                              fontFamily: "WorkSansSemiBold",
-                                              fontSize: 16.0,
-                                              color: Colors.black),
+                                          keyboardType: TextInputType.emailAddress,
+                                          style: TextStyle(fontFamily: "WorkSansSemiBold", fontSize: 16.0, color: Colors.black),
                                           decoration: InputDecoration(
                                             border: InputBorder.none,
                                             icon: Icon(
@@ -231,24 +203,14 @@ class _loginState extends State<login> {
                                               size: 20.0,
                                             ),
                                             hintText: "Email Address",
-                                            hintStyle: TextStyle(
-                                                fontFamily: "Sans",
-                                                fontSize: 15.0,
-                                                letterSpacing: 1.5,
-                                                color: Colors.black45),
+                                            hintStyle: TextStyle(fontFamily: "Sans", fontSize: 15.0, letterSpacing: 1.5, color: Colors.black45),
                                           ),
                                         ),
                                         SizedBox(
-                                          height: ScreenUtil.getInstance()
-                                              .setHeight(30),
+                                          height: ScreenUtil.getInstance().setHeight(30),
                                         ),
                                         Text("Password",
-                                            style: TextStyle(
-                                                fontFamily: "Popins",
-                                                fontSize:
-                                                    ScreenUtil.getInstance()
-                                                        .setSp(30),
-                                                letterSpacing: .9)),
+                                            style: TextStyle(fontFamily: "Popins", fontSize: ScreenUtil.getInstance().setSp(30), letterSpacing: .9)),
                                         TextFormField(
                                           validator: (input) {
                                             if (input.isEmpty) {
@@ -258,10 +220,7 @@ class _loginState extends State<login> {
                                           onSaved: (input) => _pass = input,
                                           controller: loginPasswordController,
                                           obscureText: _obscureTextLogin,
-                                          style: TextStyle(
-                                              fontFamily: "Arial",
-                                              fontSize: 16.0,
-                                              color: Colors.black54),
+                                          style: TextStyle(fontFamily: "Arial", fontSize: 16.0, color: Colors.black54),
                                           decoration: InputDecoration(
                                             border: InputBorder.none,
                                             icon: Icon(
@@ -270,10 +229,7 @@ class _loginState extends State<login> {
                                               color: Colors.black45,
                                             ),
                                             hintText: "Password",
-                                            hintStyle: TextStyle(
-                                                fontFamily: "Sans",
-                                                fontSize: 16.0,
-                                                color: Colors.black54),
+                                            hintStyle: TextStyle(fontFamily: "Sans", fontSize: 16.0, color: Colors.black54),
                                             suffixIcon: GestureDetector(
                                               onTap: _toggleLogin,
                                               child: Icon(
@@ -285,8 +241,7 @@ class _loginState extends State<login> {
                                           ),
                                         ),
                                         SizedBox(
-                                          height: ScreenUtil.getInstance()
-                                              .setHeight(35),
+                                          height: ScreenUtil.getInstance().setHeight(35),
                                         ),
                                       ],
                                     ),
@@ -296,8 +251,7 @@ class _loginState extends State<login> {
                             ),
                           ),
                         ),
-                        SizedBox(
-                            height: ScreenUtil.getInstance().setHeight(40)),
+                        SizedBox(height: ScreenUtil.getInstance().setHeight(40)),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
@@ -313,10 +267,7 @@ class _loginState extends State<login> {
                                 SizedBox(
                                   width: 8.0,
                                 ),
-                                Text("Remember me",
-                                    style: TextStyle(
-                                        fontSize: 12,
-                                        fontFamily: "Poppins-Medium"))
+                                Text("Remember me", style: TextStyle(fontSize: 12, fontFamily: "Poppins-Medium"))
                               ],
                             ),
                             InkWell(
@@ -324,131 +275,66 @@ class _loginState extends State<login> {
                                 width: ScreenUtil.getInstance().setWidth(330),
                                 height: ScreenUtil.getInstance().setHeight(100),
                                 decoration: BoxDecoration(
-                                    gradient: LinearGradient(colors: [
-                                      Color(0xFFD898F8),
-                                      Color(0xFF8189EC)
-                                    ]),
+                                    gradient: LinearGradient(colors: [Color(0xFFD898F8), Color(0xFF8189EC)]),
                                     borderRadius: BorderRadius.circular(6.0),
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color:
-                                              Color(0xFF6078ea).withOpacity(.3),
-                                          offset: Offset(0.0, 8.0),
-                                          blurRadius: 8.0)
-                                    ]),
+                                    boxShadow: [BoxShadow(color: Color(0xFF6078ea).withOpacity(.3), offset: Offset(0.0, 8.0), blurRadius: 8.0)]),
                                 child: Material(
                                   color: Colors.transparent,
                                   child: InkWell(
                                     onTap: () async {
-                                      SharedPreferences prefs;
-                                      prefs =
-                                          await SharedPreferences.getInstance();
-                                      final formState =
-                                          _registerFormKey.currentState;
+                                      final formState = _registerFormKey.currentState;
                                       User user;
+
                                       if (formState.validate()) {
                                         formState.save();
-                                        try {
-                                          prefs.setString("username", _email);
-                                          prefs.setString("id", _id);
-                                          user = (await FirebaseAuth.instance
-                                                  .signInWithEmailAndPassword(
-                                            email: _email,
-                                            password: _pass,
-                                          ))
-                                              .user;
 
-                                          setState(() {
-                                            isLoading = true;
-                                          });
-                                          // user.sendEmailVerification();
-
-                                        } catch (e) {
-                                          print('Error: $e');
-                                          CircularProgressIndicator();
-                                          print(e.message);
-                                          print(_email);
-
-                                          print(_pass);
-                                        } finally {
-                                          if (user != null) {
-                                            user = await FirebaseAuth.instance
-                                                .signInWithEmailAndPassword(
-                                                  email: _email,
-                                                  password: _pass,
-                                                )
-                                                .then((currentUser) => FirebaseFirestore
-                                                    .instance
+                                        user = await FirebaseAuth.instance
+                                            .signInWithEmailAndPassword(
+                                              email: _email,
+                                              password: _pass,
+                                            )
+                                            .then( (currentUser)  => FirebaseFirestore.instance
                                                     .collection("user")
                                                     .doc(currentUser.user.uid)
                                                     .get()
-                                                    .then((DocumentSnapshot
-                                                            result) =>
-                                                        Navigator.of(context)
-                                                            .pushReplacement(
-                                                                PageRouteBuilder(
-                                                                    pageBuilder: (_,
-                                                                            __,
-                                                                            ___) =>
-                                                                        new bottomNavBar(
-                                                                          idUser: currentUser
-                                                                              .user
-                                                                              .uid,
-                                                                        ))))
-                                                    .catchError(
-                                                        (err) => print(err)))
-                                                .catchError(
-                                                    (err) => print(err));
-                                          } else {
-                                            showDialog(
-                                                context: context,
-                                                builder:
-                                                    (BuildContext context) {
-                                                  return AlertDialog(
-                                                    title: Text("Login Failed"),
-                                                    content: Text(
-                                                        "Please check your password and try again!"),
-                                                    actions: <Widget>[
-                                                      FlatButton(
-                                                        child: Text("Close"),
-                                                        onPressed: () {
-                                                          Navigator.of(context)
-                                                              .pop();
-                                                        },
-                                                      )
-                                                    ],
-                                                  );
-                                                });
-                                          }
-                                        }
-                                      } else {
-                                        showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return AlertDialog(
-                                                title: Text("Error"),
-                                                content: Text(
-                                                    "Please check your email and password"),
-                                                actions: <Widget>[
-                                                  FlatButton(
-                                                    child: Text("Close"),
-                                                    onPressed: () {
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                    },
-                                                  )
-                                                ],
-                                              );
-                                            });
+                                                    .then((DocumentSnapshot result) async {
+
+                                                      SharedPreferences gg_prefs = await SharedPreferences.getInstance();
+
+                                                      GGUser ggUser = await getGGUser();
+                                                      gg_prefs.setString("username", ggUser.name);
+                                                      gg_prefs.setString("user_type", ggUser.user_type);
+                                                      gg_prefs.setString("uid", ggUser.uid);
+                                                      gg_prefs.setString("city", ggUser.city);
+
+                                                      Navigator.of(context).pushReplacement(PageRouteBuilder(
+                                                          pageBuilder: (_, __, ___) => new bottomNavBar(
+                                                                idUser: currentUser.user.uid,
+                                                              )));
+                                                }))
+                                            .catchError((err) {
+                                          showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  title: Text("Login Failed"),
+                                                  content: Text("Please check your password and try again!"),
+                                                  actions: <Widget>[
+                                                    FlatButton(
+                                                      child: Text("Close"),
+                                                      onPressed: () {
+                                                        Navigator.of(context).pop();
+                                                      },
+                                                    )
+                                                  ],
+                                                );
+                                              });
+                                        });
                                       }
                                     },
                                     child: Center(
                                       child: Text("SIGNIN",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontFamily: "Poppins-Bold",
-                                              fontSize: 18,
-                                              letterSpacing: 1.0)),
+                                          style: TextStyle(color: Colors.white, fontFamily: "Poppins-Bold", fontSize: 18, letterSpacing: 1.0)),
                                     ),
                                   ),
                                 ),
@@ -463,9 +349,7 @@ class _loginState extends State<login> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             horizontalLine(),
-                            Text("Don't Have Account?",
-                                style: TextStyle(
-                                    fontSize: 13.0, fontFamily: "Popins")),
+                            Text("Don't Have Account?", style: TextStyle(fontSize: 13.0, fontFamily: "Popins")),
                             horizontalLine()
                           ],
                         ),
@@ -484,18 +368,14 @@ class _loginState extends State<login> {
                           children: <Widget>[
                             InkWell(
                               onTap: () {
-                                Navigator.of(context).pushReplacement(
-                                    PageRouteBuilder(
-                                        pageBuilder: (_, __, ___) => signUp()));
+                                Navigator.of(context).pushReplacement(PageRouteBuilder(pageBuilder: (_, __, ___) => signUp()));
                               },
                               child: Container(
                                 height: 50.0,
                                 width: 300.0,
                                 decoration: BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(40.0)),
-                                  border: Border.all(
-                                      color: Color(0xFFD898F8), width: 1.0),
+                                  borderRadius: BorderRadius.all(Radius.circular(40.0)),
+                                  border: Border.all(color: Color(0xFFD898F8), width: 1.0),
                                 ),
                                 child: Center(
                                   child: Text("SignUp",

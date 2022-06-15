@@ -2,10 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:goddessGuild/Screen/B1_Home/UpdateEvent.dart';
 import 'package:flutter/material.dart';
 import 'package:giffy_dialog/giffy_dialog.dart';
+import 'package:goddessGuild/db_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:goddessGuild/models.dart';
+import 'package:goddessGuild/Screen/B4_Profile/Create_New_Event.dart';
 
 class UpdateEventList extends StatefulWidget {
   String user_id;
+
   UpdateEventList({this.user_id});
 
   @override
@@ -44,31 +48,22 @@ class _UpdateEventListState extends State<UpdateEventList> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Text("Your Events Create",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontFamily: "Sofia",
-                            fontSize: 17.0)),
+                    Text("Your Created Events", style: TextStyle(fontWeight: FontWeight.w600, fontFamily: "Sofia", fontSize: 17.0)),
                   ],
                 ),
                 Padding(
                     padding: EdgeInsets.only(bottom: 0.0),
-                    child: StreamBuilder(
-                      stream: FirebaseFirestore.instance
-                          .collection("user")
-                          .doc(widget.user_id)
-                          .collection('event')
-                          .snapshots(),
-                      builder: (BuildContext ctx,
-                          AsyncSnapshot<QuerySnapshot> snapshot) {
-                        if (!snapshot.hasData) {
+                    child: FutureBuilder(
+                      future: getUserCreatedEvents(),
+                      builder: (BuildContext ctx, AsyncSnapshot<List<GGEvent>> ggEvents) {
+                        if (!ggEvents.hasData) {
                           return noItem();
                         } else {
-                          if (snapshot.data.docs.isEmpty) {
+                          if (ggEvents.data.isEmpty) {
                             return noItem();
                           } else {
-                            return new cardDataFirestore(
-                              list: snapshot.data.docs,
+                            return new updateEventList(
+                              ggEventList: ggEvents.data,
                               user_id: widget.user_id,
                             );
 
@@ -86,45 +81,35 @@ class _UpdateEventListState extends State<UpdateEventList> {
   }
 }
 
-class cardDataFirestore extends StatelessWidget {
+class updateEventList extends StatefulWidget {
   String user_id;
-  cardDataFirestore({this.user_id, this.list});
+  List<GGEvent> ggEventList;
 
-  final List<DocumentSnapshot> list;
+  updateEventList({Key key, this.user_id, this.ggEventList}) : super(key: key);
+
+  @override
+  updateEventListState createState() {
+    return updateEventListState();
+  }
+}
+
+class updateEventListState extends State<updateEventList> {
   @override
   Widget build(BuildContext context) {
+    GGEvent deleted_item = null;
+
+
     return ListView.builder(
         shrinkWrap: true,
         primary: false,
-        itemCount: list.length,
+        itemCount: widget.ggEventList.length,
         itemBuilder: (context, i) {
-          String title = list[i].data()['title'].toString();
-          String category = list[i].data()['category'].toString();
-          String image_url = list[i].data()['image_url'].toString();
-          String id = list[i].data()['id'].toString();
-          String description = list[i].data()['desc1'].toString();
-          String hours = list[i].data()['time'].toString();
-          String date = list[i].data()['date'].toString();
-          String location = list[i].data()['address'].toString();
-
           return InkWell(
             onTap: () {
               Navigator.of(context).push(PageRouteBuilder(
-                  pageBuilder: (_, __, ___) => new updateEvent(
-                        category: category,
-                        desc: description,
-                        image_url: image_url,
-                        time: hours,
-                        list: list[i].id,
-                        date: date,
-                        place: location,
-                        title: title,
-                        id: id,
-                        user_id: user_id,
-                      ),
+                  pageBuilder: (_, __, ___) => new NewEventForm(appTitle: "Update " + widget.ggEventList[i].title, ggEvent: widget.ggEventList[i]),
                   transitionDuration: Duration(milliseconds: 600),
-                  transitionsBuilder:
-                      (_, Animation<double> animation, __, Widget child) {
+                  transitionsBuilder: (_, Animation<double> animation, __, Widget child) {
                     return Opacity(
                       opacity: animation.value,
                       child: child,
@@ -136,24 +121,16 @@ class cardDataFirestore extends StatelessWidget {
               child: Stack(
                 children: <Widget>[
                   Hero(
-                    tag: 'hero-tag-$id',
+                    tag: 'hero-tag-' + widget.ggEventList[i].doc_id,
                     child: Material(
                       child: Container(
                         height: 390.0,
                         width: double.infinity,
                         decoration: BoxDecoration(
                             color: Colors.grey[300],
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(10.0)),
-                            image: DecorationImage(
-                                image: NetworkImage(image_url),
-                                fit: BoxFit.cover),
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Colors.black12.withOpacity(0.1),
-                                  spreadRadius: 0.2,
-                                  blurRadius: 0.5)
-                            ]),
+                            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                            image: DecorationImage(image: NetworkImage(widget.ggEventList[i].image_url), fit: BoxFit.cover),
+                            boxShadow: [BoxShadow(color: Colors.black12.withOpacity(0.1), spreadRadius: 0.2, blurRadius: 0.5)]),
                       ),
                     ),
                   ),
@@ -164,51 +141,56 @@ class cardDataFirestore extends StatelessWidget {
                         showDialog(
                             context: context,
                             builder: (_) => NetworkGiffyDialog(
+                                  buttonOkColor: Colors.redAccent,
+                                  buttonCancelColor: Colors.greenAccent,
+                                  buttonOkText: Text(
+                                    "Delete",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
                                   image: Image.network(
                                     "https://raw.githubusercontent.com/Shashank02051997/FancyGifDialog-Android/master/GIF's/gif14.gif",
                                     fit: BoxFit.cover,
                                   ),
-                                  title: Text('Delete Event?',
+                                  title: Text('Delete ${widget.ggEventList[i].title}?',
                                       textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontFamily: "Gotik",
-                                          fontSize: 22.0,
-                                          fontWeight: FontWeight.w600)),
+                                      style: TextStyle(fontFamily: "Gotik", fontSize: 22.0, fontWeight: FontWeight.w600)),
                                   description: Text(
-                                    "Are you sure you want to delete " + title,
+                                    "You sure you wanna delete ${widget.ggEventList[i].title}?",
                                     textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontFamily: "Sofia",
-                                        fontWeight: FontWeight.w300,
-                                        color: Colors.black26),
+                                    style: TextStyle(fontFamily: "Sofia", fontWeight: FontWeight.w300, color: Colors.black26),
                                   ),
                                   onOkButtonPressed: () {
-                                    Navigator.pop(context);
+                                    // TODO:: need animation
+                                    deleteGGEvent(widget.ggEventList[i].doc_id);
+                                    deleted_item = widget.ggEventList[i];
 
-                                    FirebaseFirestore.instance
-                                        .runTransaction((transaction) async {
-                                      DocumentSnapshot snapshot =
-                                          await transaction
-                                              .get(list[i].reference);
-                                      await transaction
-                                          .delete(snapshot.reference);
-                                      SharedPreferences prefs =
-                                          await SharedPreferences.getInstance();
-                                      prefs.remove(title);
-                                    });
-                                    Scaffold.of(context).showSnackBar(SnackBar(
-                                      content: Text("Delete" + title),
-                                      backgroundColor: Colors.red,
-                                      duration: Duration(seconds: 3),
-                                    ));
+                                    if (deleted_item != null) {
+                                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                        backgroundColor: Colors.redAccent,
+                                        content: Text(
+                                          "Goodbye old friend",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ));
+
+                                      setState(() {
+                                        widget.ggEventList.removeWhere((item) => item.doc_id == deleted_item.doc_id);
+                                      });
+                                    }
+
+                                    Navigator.pop(context);
+                                    //Navigator.of(context, rootNavigator: true).pop(context);
                                   },
-                                ));
+                                )
+                        );
+
+
                       },
                       child: Padding(
                         padding: const EdgeInsets.only(top: 10.0, right: 10.0),
                         child: CircleAvatar(
                             radius: 20.0,
-                            backgroundColor: Colors.black12,
+                            backgroundColor: Colors.redAccent,
                             child: Icon(
                               Icons.delete,
                               color: Colors.white,
@@ -220,13 +202,8 @@ class cardDataFirestore extends StatelessWidget {
                     padding: EdgeInsets.only(top: 40.0),
                     child: Container(
                       width: 210.0,
-                      decoration:
-                          BoxDecoration(color: Colors.white, boxShadow: [
-                        BoxShadow(
-                            color: Colors.black12.withOpacity(0.1),
-                            spreadRadius: 0.2,
-                            blurRadius: 0.5)
-                      ]),
+                      decoration: BoxDecoration(
+                          color: Colors.white, boxShadow: [BoxShadow(color: Colors.black12.withOpacity(0.1), spreadRadius: 0.2, blurRadius: 0.5)]),
                       child: Padding(
                         padding: const EdgeInsets.only(left: 15.0, top: 15.0),
                         child: Column(
@@ -234,49 +211,31 @@ class cardDataFirestore extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                              title,
-                              style: TextStyle(
-                                  fontSize: 19.0,
-                                  fontFamily: "Sofia",
-                                  fontWeight: FontWeight.w800),
+                              widget.ggEventList[i].title,
+                              style: TextStyle(fontSize: 19.0, fontFamily: "Sofia", fontWeight: FontWeight.w800),
                             ),
                             SizedBox(height: 4.0),
                             Text(
-                              location,
-                              style: TextStyle(
-                                  fontSize: 14.0,
-                                  fontFamily: "Sofia",
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black45),
+                              widget.ggEventList[i].address,
+                              style: TextStyle(fontSize: 14.0, fontFamily: "Sofia", fontWeight: FontWeight.w400, color: Colors.black45),
                             ),
                             SizedBox(height: 4.0),
                             Text(
-                              date,
-                              style: TextStyle(
-                                  fontSize: 14.0,
-                                  fontFamily: "Sofia",
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black45),
+                              widget.ggEventList[i].date,
+                              style: TextStyle(fontSize: 14.0, fontFamily: "Sofia", fontWeight: FontWeight.w400, color: Colors.black45),
                             ),
                             SizedBox(
                               height: 10.0,
                             ),
                             Padding(
-                                padding:
-                                    EdgeInsets.only(top: 3.0, bottom: 30.0),
+                                padding: EdgeInsets.only(top: 3.0, bottom: 30.0),
                                 child: StreamBuilder(
-                                  stream: FirebaseFirestore.instance
-                                      .collection("JoinEvent")
-                                      .doc("user")
-                                      .collection(title)
-                                      .snapshots(),
-                                  builder: (BuildContext ctx,
-                                      AsyncSnapshot<QuerySnapshot> snapshot) {
+                                  stream: FirebaseFirestore.instance.collection("JoinEvent").doc("user").collection(widget.ggEventList[i].title).snapshots(),
+                                  builder: (BuildContext ctx, AsyncSnapshot<QuerySnapshot> snapshot) {
                                     if (!snapshot.hasData) {
                                       return CircularProgressIndicator();
                                     } else {
-                                      return new joinEvent(
-                                          list: snapshot.data.docs);
+                                      return new joinEvent(list: snapshot.data.docs);
                                     }
                                   },
                                 )),
@@ -295,6 +254,7 @@ class cardDataFirestore extends StatelessWidget {
 
 class joinEvent extends StatelessWidget {
   joinEvent({this.list});
+
   final List<DocumentSnapshot> list;
 
   @override
@@ -322,11 +282,8 @@ class joinEvent extends StatelessWidget {
                           height: 35.0,
                           width: 35.0,
                           decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(70.0)),
-                              image: DecorationImage(
-                                  image: NetworkImage(_img),
-                                  fit: BoxFit.cover)),
+                              borderRadius: BorderRadius.all(Radius.circular(70.0)),
+                              image: DecorationImage(image: NetworkImage(_img), fit: BoxFit.cover)),
                         ),
                       ),
                     ],
@@ -339,9 +296,8 @@ class joinEvent extends StatelessWidget {
           child: Container(
             height: 38.0,
             width: 38.0,
-            decoration: BoxDecoration(
-                border: Border.all(color: Colors.deepPurpleAccent, width: 1.0),
-                borderRadius: BorderRadius.all(Radius.circular(60.0))),
+            decoration:
+                BoxDecoration(border: Border.all(color: Colors.deepPurpleAccent, width: 1.0), borderRadius: BorderRadius.all(Radius.circular(60.0))),
             child: Center(
               child: Text(
                 "+" + list.length.toString(),
@@ -370,21 +326,15 @@ class noItem extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Padding(
-                padding:
-                    EdgeInsets.only(top: mediaQueryData.padding.top + 80.0)),
+            Padding(padding: EdgeInsets.only(top: mediaQueryData.padding.top + 80.0)),
             Image.asset(
               "assets/image/IlustrasiCart.png",
               height: 300.0,
             ),
             Padding(padding: EdgeInsets.only(bottom: 10.0)),
             Text(
-              "Not Have Event Create",
-              style: TextStyle(
-                  fontWeight: FontWeight.w400,
-                  fontSize: 19.5,
-                  color: Colors.black26.withOpacity(0.2),
-                  fontFamily: "Popins"),
+              "You have not created any events",
+              style: TextStyle(fontWeight: FontWeight.w400, fontSize: 19.5, color: Colors.black26.withOpacity(0.2), fontFamily: "Popins"),
             ),
           ],
         ),

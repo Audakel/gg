@@ -1,19 +1,19 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:goddessGuild/Screen/B1_Home/Detail_Event.dart';
+import 'package:goddessGuild/event_detail.dart';
 import 'package:goddessGuild/Screen/B2_Category/Page_Transformer_Card/page_transformer.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
-class sportUnitedStates extends StatefulWidget {
+class bacheloretteEvents extends StatefulWidget {
   String idUser;
-  sportUnitedStates({this.idUser});
+  bacheloretteEvents({this.idUser});
 
-  _sportUnitedStatesState createState() => _sportUnitedStatesState();
+  _bacheloretteEventsState createState() => _bacheloretteEventsState();
 }
 
-class _sportUnitedStatesState extends State<sportUnitedStates> {
+class _bacheloretteEventsState extends State<bacheloretteEvents> {
   ///
   /// Get image data dummy from firebase server
   ///
@@ -27,7 +27,7 @@ class _sportUnitedStatesState extends State<sportUnitedStates> {
 
   @override
   void initState() {
-    Timer(Duration(seconds: 3), () {
+    Timer(Duration(seconds: 1), () {
       setState(() {
         loadImage = false;
       });
@@ -51,8 +51,8 @@ class _sportUnitedStatesState extends State<sportUnitedStates> {
                     child: StreamBuilder(
                       stream: FirebaseFirestore.instance
                           .collection("event")
-                          .where('country', isEqualTo: 'america')
-                          .where('category', isEqualTo: 'sport')
+                          .where('country', isEqualTo: 'germany')
+                          .where('category', isEqualTo: 'art')
                           .snapshots(),
                       builder: (BuildContext ctx,
                           AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -277,7 +277,7 @@ class dataFirestore extends StatelessWidget {
                             Navigator.of(context).push(
                               PageRouteBuilder(
                                   pageBuilder: (_, __, ___) =>
-                                      new eventListDetail(
+                                      new eventListDetailGoddess(
 
                                       ),
                                   transitionDuration:

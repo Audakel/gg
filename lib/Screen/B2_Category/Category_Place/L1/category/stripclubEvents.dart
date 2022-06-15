@@ -1,19 +1,19 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:goddessGuild/Screen/B1_Home/Detail_Event.dart';
+import 'package:goddessGuild/event_detail.dart';
 import 'package:goddessGuild/Screen/B2_Category/Page_Transformer_Card/page_transformer.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
-class musicGermany extends StatefulWidget {
+class stripclubEvents extends StatefulWidget {
   String idUser;
-  musicGermany({this.idUser});
+  stripclubEvents({this.idUser});
 
-  _musicGermanyState createState() => _musicGermanyState();
+  _stripclubEventsState createState() => _stripclubEventsState();
 }
 
-class _musicGermanyState extends State<musicGermany> {
+class _stripclubEventsState extends State<stripclubEvents> {
   ///
   /// Get image data dummy from firebase server
   ///
@@ -27,7 +27,7 @@ class _musicGermanyState extends State<musicGermany> {
 
   @override
   void initState() {
-    Timer(Duration(seconds: 3), () {
+    Timer(Duration(seconds: 1), () {
       setState(() {
         loadImage = false;
       });
@@ -277,7 +277,7 @@ class dataFirestore extends StatelessWidget {
                             Navigator.of(context).push(
                               PageRouteBuilder(
                                   pageBuilder: (_, __, ___) =>
-                                      new eventListDetail(
+                                      new eventListDetailGoddess(
 
                                       ),
                                   transitionDuration:

@@ -1,19 +1,23 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:goddessGuild/Screen/B1_Home/Detail_Event.dart';
+import 'package:goddessGuild/db_service.dart';
+import 'package:goddessGuild/event_detail.dart';
 import 'package:goddessGuild/Screen/B2_Category/Page_Transformer_Card/page_transformer.dart';
 import 'package:flutter/material.dart';
+import 'package:goddessGuild/models.dart';
 import 'package:shimmer/shimmer.dart';
 
-class artBrazil extends StatefulWidget {
+class patronEventSubset extends StatefulWidget {
   String idUser;
-  artBrazil({this.idUser});
+  String title;
+  String event_filter;
+  patronEventSubset({this.idUser, this.title, this.event_filter});
 
-  _artBrazilState createState() => _artBrazilState();
+  _patronEventSubsetState createState() => _patronEventSubsetState();
 }
 
-class _artBrazilState extends State<artBrazil> {
+class _patronEventSubsetState extends State<patronEventSubset> {
   ///
   /// Get image data dummy from firebase server
   ///
@@ -27,7 +31,7 @@ class _artBrazilState extends State<artBrazil> {
 
   @override
   void initState() {
-    Timer(Duration(seconds: 3), () {
+    Timer(Duration(seconds: 1), () {
       setState(() {
         loadImage = false;
       });
@@ -37,7 +41,6 @@ class _artBrazilState extends State<artBrazil> {
   }
 
   Widget build(BuildContext context) {
-    var textTheme = Theme.of(context).textTheme;
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -49,22 +52,17 @@ class _artBrazilState extends State<artBrazil> {
               children: <Widget>[
                 Padding(
                     padding: EdgeInsets.only(top: 15.0, bottom: 0.0),
-                    child: StreamBuilder(
-                      stream: FirebaseFirestore.instance
-                          .collection("event")
-                          .where('country', isEqualTo: 'brazil')
-                          .where('category', isEqualTo: 'art')
-                          .snapshots(),
-                      builder: (BuildContext ctx,
-                          AsyncSnapshot<QuerySnapshot> snapshot) {
+                    child: FutureBuilder<List<GGEvent>>(
+                      future: getAllGGEvents(event_filter: widget.event_filter),
+                      builder: (ctx, ggEventList) {
                         if (loadImage) {
                           return _loadingDataHeader(ctx);
                         } else {
-                          if (!snapshot.hasData) {
+                          if (!ggEventList.hasData) {
                             return _loadingDataHeader(ctx);
                           } else {
-                            return new dataFirestore(
-                              list: snapshot.data.docs,
+                            return new patronEventsList(
+                              list: ggEventList.data,
                               user_id: widget.idUser,
                             );
                           }
@@ -175,10 +173,10 @@ Widget cardHeaderLoading(BuildContext context) {
   );
 }
 
-class dataFirestore extends StatelessWidget {
+class patronEventsList extends StatelessWidget {
   String user_id;
-  dataFirestore({this.list, this.user_id});
-  final List<DocumentSnapshot> list;
+  patronEventsList({this.list, this.user_id});
+  final List<GGEvent> list;
   PageVisibility pageVisibility;
 
   Widget _applyTextEffects({
@@ -230,22 +228,12 @@ class dataFirestore extends StatelessWidget {
             controller: PageController(viewportFraction: 0.86),
             itemCount: list.length,
             itemBuilder: (context, i) {
-              String title = list[i].data()['title'].toString();
-              String category = list[i].data()['category'].toString();
-              String image_url = list[i].data()['image_url'].toString();
-              String id = list[i].data()['id'].toString();
-              String description = list[i].data()['desc1'].toString();
-              String price = list[i].data()['price'].toString();
-              String hours = list[i].data()['time'].toString();
-              String date = list[i].data()['date'].toString();
-              String location = list[i].data()['address'].toString();
-              String description2 = list[i].data()['desc2'].toString();
-              String description3 = list[i].data()['desc3'].toString();
+              GGEvent ggEvent = list[i];
 
               return Padding(
                 padding: const EdgeInsets.only(right: 10.0),
                 child: Hero(
-                  tag: 'hero-tag-$id',
+                  tag: 'hero-tag-' + ggEvent.doc_id,
                   child: Material(
                     child: Container(
                       height: 500.0,
@@ -254,7 +242,7 @@ class dataFirestore extends StatelessWidget {
                           borderRadius: BorderRadius.all(Radius.circular(12.0)),
                           color: Colors.grey[500],
                           image: DecorationImage(
-                              image: NetworkImage(image_url), fit: BoxFit.cover),
+                              image: NetworkImage(ggEvent.image_url), fit: BoxFit.cover),
                           boxShadow: [
                             BoxShadow(
                                 color: Colors.black12.withOpacity(0.1),
@@ -278,9 +266,7 @@ class dataFirestore extends StatelessWidget {
                             Navigator.of(context).push(
                               PageRouteBuilder(
                                   pageBuilder: (_, __, ___) =>
-                                      new eventListDetail(
-
-                                      ),
+                                      new eventListDetailPatron(ggEvent: ggEvent,),
                                   transitionDuration:
                                       Duration(milliseconds: 600),
                                   transitionsBuilder: (_,
@@ -311,7 +297,7 @@ class dataFirestore extends StatelessWidget {
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Text(
-                                          date,
+                                          ggEvent.date,
                                           style: textTheme.caption.copyWith(
                                             color: Colors.white,
                                             fontWeight: FontWeight.bold,
@@ -324,7 +310,7 @@ class dataFirestore extends StatelessWidget {
                                           padding:
                                               const EdgeInsets.only(top: 16.0),
                                           child: Text(
-                                            title,
+                                            ggEvent.title,
                                             style: TextStyle(
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.bold),

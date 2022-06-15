@@ -4,7 +4,8 @@ import 'package:goddessGuild/Screen/B2_Category/B2_Category.dart';
 import 'package:goddessGuild/Screen/B3_Manage_Event/B3_Manage_Event.dart';
 import 'package:goddessGuild/Screen/B4_Profile/B4_Profile.dart';
 import 'package:flutter/material.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:goddessGuild/constants.dart';
 import 'custom_nav_bar.dart';
 
 class bottomNavBar extends StatefulWidget {
@@ -15,15 +16,36 @@ class bottomNavBar extends StatefulWidget {
 }
 
 class _bottomNavBarState extends State<bottomNavBar> {
+  SharedPreferences gg_prefs;
+  String user_type;
   int currentIndex = 0;
+
+  getPrefs() async{
+    gg_prefs = await SharedPreferences.getInstance();
+    user_type = gg_prefs.get("user_type"); // type = dancer
+  }
+
+  @override
+  void initState() {
+    getPrefs();
+
+    if (user_type == USER_TYPE[0]){
+      currentIndex = 0;
+    }
+    // USER TYPE == PATRON
+    else{
+      currentIndex = 1;
+    }
+
+    super.initState();
+  }
+
+
   bool _color = true;
   Widget callPage(int current) {
     switch (current) {
       case 0:
         return new showCaseHome(
-          user_id: widget.idUser,
-        );
-        Category(
           user_id: widget.idUser,
         );
         break;
@@ -33,7 +55,7 @@ class _bottomNavBarState extends State<bottomNavBar> {
         );
         break;
       case 2:
-        return new favorite(
+        return new manageEvent(
           uid: widget.idUser,
         );
         break;
@@ -61,16 +83,33 @@ class _bottomNavBarState extends State<bottomNavBar> {
                 icon: IconData(0xe900, fontFamily: 'home'),
                 onTap: () {
                   setState(() {
-                    currentIndex = 0;
+                    // Hack to change what "home" is depending on who you are
+                    // USER TYPE == dancer
+                    if (user_type == USER_TYPE[0]){
+                      currentIndex = 0;
+                    }
+                    // USER TYPE == PATRON
+                    else{
+                      currentIndex = 1;
+                    }
+
                   });
                 }),
             BottomNavigationDotBarItem(
                 icon: IconData(0xe900, fontFamily: 'file'),
                 onTap: () {
                   setState(() {
-                    currentIndex = 1;
+                    if (user_type == USER_TYPE[0]){
+                      currentIndex = 1;
+                    }
+                    // USER TYPE == PATRON
+                    else{
+                      currentIndex = 0;
+                    }
                   });
                 }),
+
+
             BottomNavigationDotBarItem(
                 icon: IconData(0xe900, fontFamily: 'hearth'),
                 onTap: () {

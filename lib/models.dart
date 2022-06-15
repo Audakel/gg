@@ -68,7 +68,7 @@ class GGEvent {
         time_start = map["time_start"],
         time_end = map["time_end"],
         address = map["address"],
-        zip = map["cityName"],
+        zip = map["zip"],
         phone = map["phone"],
         date = map["date"],
         desc1 = map["desc1"],
@@ -87,7 +87,7 @@ class GGEvent {
         time_start = doc.data()["time_start"],
         time_end = doc.data()["time_end"],
         address = doc.data()["address"],
-        zip = doc.data()["cityName"],
+        zip = doc.data()["zip"],
         phone = doc.data()["phone"],
         date = doc.data()["date"],
         desc1 = doc.data()["desc1"],
@@ -105,25 +105,25 @@ class GGUser {
   String uid;
   String name;
   String email;
-  String password;
-  String country;
+  String referred_by;
   String city;
   int level;
   double rating;
   String profile_photo;
   int creation_date;
+  String user_type;
 
   GGUser({
     this.uid,
     this.name,
     this.email,
-    this.password,
-    this.country,
+    this.referred_by,
     this.city,
     this.level,
     this.rating,
     this.profile_photo,
     this.creation_date,
+    this.user_type,
   });
 
   Map<String, dynamic> toMap() {
@@ -131,13 +131,13 @@ class GGUser {
       'uid': uid,
       'name': name,
       'email': email,
-      'password': password,
-      'country': country,
+      'referred_by': referred_by,
       'city': city,
       'level': level,
       'rating': rating,
       'profile_photo': profile_photo,
       'creation_date': creation_date,
+      'user_type': user_type,
     };
   }
 
@@ -145,24 +145,24 @@ class GGUser {
         uid = map["uid"],
         name = map["name"],
         email = map["email"],
-        password = map["password"],
-        country = map["country"],
+        referred_by = map["referred_by"],
         city = map["city"],
         level = map["level"],
         rating = map["rating"],
         profile_photo = map["profile_photo"],
+        user_type = map["user_type"],
         creation_date = map["creation_date"];
 
   GGUser.fromDocumentSnapshot(DocumentSnapshot doc) :
         uid = doc.data()["uid"],
         name = doc.data()["name"],
         email = doc.data()["email"],
-        password = doc.data()["password"],
-        country = doc.data()["country"],
+        referred_by = doc.data()["referred_by"],
         city = doc.data()["city"],
         level = doc.data()["level"],
         rating = doc.data()["rating"],
         profile_photo = doc.data()["profile_photo"],
+        user_type = doc.data()["user_type"],
         creation_date = doc.data()["creation_date"];
 }
 

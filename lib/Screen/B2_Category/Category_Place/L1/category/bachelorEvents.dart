@@ -1,19 +1,19 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:goddessGuild/Screen/B1_Home/Detail_Event.dart';
+import 'package:goddessGuild/event_detail.dart';
 import 'package:goddessGuild/Screen/B2_Category/Page_Transformer_Card/page_transformer.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
-class allBrazil extends StatefulWidget {
+class bachelorEvents extends StatefulWidget {
   String idUser;
-  allBrazil({this.idUser});
+  bachelorEvents({this.idUser});
 
-  _allBrazilState createState() => _allBrazilState();
+  _bachelorEventsState createState() => _bachelorEventsState();
 }
 
-class _allBrazilState extends State<allBrazil> {
+class _bachelorEventsState extends State<bachelorEvents> {
   ///
   /// Get image data dummy from firebase server
   ///
@@ -27,7 +27,7 @@ class _allBrazilState extends State<allBrazil> {
 
   @override
   void initState() {
-    Timer(Duration(seconds: 3), () {
+    Timer(Duration(seconds: 1), () {
       setState(() {
         loadImage = false;
       });
@@ -51,7 +51,8 @@ class _allBrazilState extends State<allBrazil> {
                     child: StreamBuilder(
                       stream: FirebaseFirestore.instance
                           .collection("event")
-                          .where('country', isEqualTo: 'brazil')
+                          .where('country', isEqualTo: 'germany')
+                          .where('category', isEqualTo: 'sport')
                           .snapshots(),
                       builder: (BuildContext ctx,
                           AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -276,7 +277,7 @@ class dataFirestore extends StatelessWidget {
                             Navigator.of(context).push(
                               PageRouteBuilder(
                                   pageBuilder: (_, __, ___) =>
-                                      new eventListDetail(
+                                      new eventListDetailGoddess(
 
                                       ),
                                   transitionDuration:
@@ -294,7 +295,9 @@ class dataFirestore extends StatelessWidget {
                           },
                           child: Stack(
                             children: <Widget>[
+                              // image,
                               imageOverlayGradient,
+
                               Positioned(
                                 bottom: 0.0,
                                 left: 0.0,

@@ -87,10 +87,13 @@ class _signUpState extends State<signUp> {
   bool _isSelected = false;
   bool imageUpload = true;
   bool isLoading = false;
+  String city_dropdown;
+  String user_type_dropdown;
+
   final GlobalKey<FormState> _registerFormKey = GlobalKey<FormState>();
-  String _email, _pass, _pass2, _name, _country, _city;
+  String _email, _pass, _pass2, _name, _refered_by, _city;
   TextEditingController signupEmailController = new TextEditingController();
-  TextEditingController signupCountryController = new TextEditingController();
+  TextEditingController refered_by_controller = new TextEditingController();
   TextEditingController signupCityController = new TextEditingController();
   TextEditingController signupNameController = new TextEditingController();
   TextEditingController signupPasswordController = new TextEditingController();
@@ -103,6 +106,13 @@ class _signUpState extends State<signUp> {
   bool _obscureTextSignup = true;
 
   bool _obscureTextSignupConfirm = true;
+
+  @override
+  void initState() {
+    city_dropdown = SUPPORTED_CITIES[0];
+    user_type_dropdown = USER_TYPE[0];
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -139,7 +149,7 @@ class _signUpState extends State<signUp> {
                   Row(
                     children: <Widget>[
                       SizedBox(height: 20.0),
-                      Text("Event",
+                      Text(COMPANY_NAME,
                           style: TextStyle(
                               fontFamily: "Sofia",
                               fontSize: ScreenUtil.getInstance().setSp(60),
@@ -153,8 +163,7 @@ class _signUpState extends State<signUp> {
                   ),
                   Container(
                     width: double.infinity,
-                    decoration:
-                        BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8.0), boxShadow: [
+                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8.0), boxShadow: [
                       BoxShadow(color: Colors.black12.withOpacity(0.08), offset: Offset(0.0, 15.0), blurRadius: 15.0),
                       BoxShadow(color: Colors.black12.withOpacity(0.01), offset: Offset(0.0, -10.0), blurRadius: 10.0),
                     ]),
@@ -202,12 +211,7 @@ class _signUpState extends State<signUp> {
                                           decoration: BoxDecoration(
                                               borderRadius: BorderRadius.all(Radius.circular(50.0)),
                                               color: Colors.blueAccent,
-                                              boxShadow: [
-                                                BoxShadow(
-                                                    color: Colors.black12.withOpacity(0.1),
-                                                    blurRadius: 10.0,
-                                                    spreadRadius: 4.0)
-                                              ]),
+                                              boxShadow: [BoxShadow(color: Colors.black12.withOpacity(0.1), blurRadius: 10.0, spreadRadius: 4.0)]),
                                           child: _photoLocal == null
                                               ? new Stack(
                                                   children: <Widget>[
@@ -277,8 +281,7 @@ class _signUpState extends State<signUp> {
                                     controller: signupNameController,
                                     keyboardType: TextInputType.text,
                                     textCapitalization: TextCapitalization.words,
-                                    style:
-                                        TextStyle(fontFamily: "WorkSofiaSemiBold", fontSize: 16.0, color: Colors.black),
+                                    style: TextStyle(fontFamily: "WorkSofiaSemiBold", fontSize: 16.0, color: Colors.black),
                                     decoration: InputDecoration(
                                       border: InputBorder.none,
                                       icon: Icon(
@@ -286,14 +289,14 @@ class _signUpState extends State<signUp> {
                                         size: 19.0,
                                         color: Colors.black45,
                                       ),
-                                      hintText: "Name",
+                                      hintText: "Your name at events",
                                       hintStyle: TextStyle(fontFamily: "Sofia", fontSize: 15.0),
                                     ),
                                   ),
                                   SizedBox(
                                     height: 10.0,
                                   ),
-                                  Text("Country",
+                                  Text("Referred by",
                                       style: TextStyle(
                                           fontFamily: "Sofia",
                                           fontSize: ScreenUtil.getInstance().setSp(30),
@@ -302,23 +305,22 @@ class _signUpState extends State<signUp> {
                                   TextFormField(
                                     validator: (input) {
                                       if (input.isEmpty) {
-                                        return 'Please input your country';
+                                        return 'Who referred you?';
                                       }
                                     },
-                                    onSaved: (input) => _country = input,
-                                    controller: signupCountryController,
+                                    onSaved: (input) => _refered_by = input,
+                                    controller: refered_by_controller,
                                     keyboardType: TextInputType.text,
                                     textCapitalization: TextCapitalization.words,
-                                    style:
-                                        TextStyle(fontFamily: "WorkSofiaSemiBold", fontSize: 16.0, color: Colors.black),
+                                    style: TextStyle(fontFamily: "WorkSofiaSemiBold", fontSize: 16.0, color: Colors.black),
                                     decoration: InputDecoration(
                                       border: InputBorder.none,
                                       icon: Icon(
-                                        FontAwesomeIcons.university,
+                                        FontAwesomeIcons.mask,
                                         size: 19.0,
                                         color: Colors.black45,
                                       ),
-                                      hintText: "Country",
+                                      hintText: "Their username or code",
                                       hintStyle: TextStyle(fontFamily: "Sofia", fontSize: 15.0),
                                     ),
                                   ),
@@ -331,26 +333,62 @@ class _signUpState extends State<signUp> {
                                           fontSize: ScreenUtil.getInstance().setSp(30),
                                           letterSpacing: .9,
                                           fontWeight: FontWeight.w600)),
-                                  TextFormField(
-                                    validator: (input) {
-                                      if (input.isEmpty) {
-                                        return 'Please input your city';
-                                      }
+                                  DropdownButtonFormField(
+                                    items: SUPPORTED_CITIES.map<DropdownMenuItem<String>>((String value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: Text(value),
+                                      );
+                                    }).toList(),
+                                    onChanged: (String newValue) {
+                                      setState(() {
+                                        city_dropdown = newValue;
+                                      });
                                     },
-                                    onSaved: (input) => _city = input,
-                                    controller: signupCityController,
-                                    keyboardType: TextInputType.text,
-                                    textCapitalization: TextCapitalization.words,
-                                    style:
-                                        TextStyle(fontFamily: "WorkSofiaSemiBold", fontSize: 16.0, color: Colors.black),
                                     decoration: InputDecoration(
                                       border: InputBorder.none,
                                       icon: Icon(
-                                        Icons.location_city,
-                                        size: 22.0,
+                                        FontAwesomeIcons.city,
+                                        size: 19.0,
                                         color: Colors.black45,
                                       ),
                                       hintText: "City",
+                                      hintStyle: TextStyle(fontFamily: "Sofia", fontSize: 15.0),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 10.0,
+                                  ),
+                                  Text("I am a ",
+                                      style: TextStyle(
+                                          fontFamily: "Sofia",
+                                          fontSize: ScreenUtil.getInstance().setSp(30),
+                                          letterSpacing: .9,
+                                          fontWeight: FontWeight.w600)
+                                  ),
+                                  SizedBox(
+                                    height: 10.0,
+                                  ),
+                                  DropdownButtonFormField(
+                                    items: USER_TYPE.map<DropdownMenuItem<String>>((String value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: Text(value),
+                                      );
+                                    }).toList(),
+                                    onChanged: (String newValue) {
+                                      setState(() {
+                                        user_type_dropdown = newValue;
+                                      });
+                                    },
+                                    decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      icon: Icon(
+                                        FontAwesomeIcons.deviantart,
+                                        size: 19.0,
+                                        color: Colors.black45,
+                                      ),
+                                      hintText: "User Type",
                                       hintStyle: TextStyle(fontFamily: "Sofia", fontSize: 15.0),
                                     ),
                                   ),
@@ -372,8 +410,7 @@ class _signUpState extends State<signUp> {
                                     onSaved: (input) => _email = input,
                                     controller: signupEmailController,
                                     keyboardType: TextInputType.emailAddress,
-                                    style:
-                                        TextStyle(fontFamily: "WorkSofiaSemiBold", fontSize: 16.0, color: Colors.black),
+                                    style: TextStyle(fontFamily: "WorkSofiaSemiBold", fontSize: 16.0, color: Colors.black),
                                     decoration: InputDecoration(
                                       border: InputBorder.none,
                                       icon: Icon(
@@ -403,8 +440,7 @@ class _signUpState extends State<signUp> {
                                       }
                                     },
                                     onSaved: (input) => _pass = input,
-                                    style: TextStyle(
-                                        fontFamily: "WorkSofiaSemiBold", fontSize: 16.0, color: Colors.black45),
+                                    style: TextStyle(fontFamily: "WorkSofiaSemiBold", fontSize: 16.0, color: Colors.black45),
                                     decoration: InputDecoration(
                                       border: InputBorder.none,
                                       icon: Icon(
@@ -456,8 +492,7 @@ class _signUpState extends State<signUp> {
                           SizedBox(
                             width: 8.0,
                           ),
-                          Text("Remember me",
-                              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12, fontFamily: "Poppins-Medium"))
+                          Text("Remember me", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12, fontFamily: "Poppins-Medium"))
                         ],
                       ),
                       InkWell(
@@ -466,8 +501,9 @@ class _signUpState extends State<signUp> {
                                 width: ScreenUtil.getInstance().setWidth(330),
                                 height: ScreenUtil.getInstance().setHeight(100),
                                 child:
-                                //SpinKitPumpingHeart(color: Color(0xFFD898F8)))
-                                SpinKitPumpingHeart( //FadingCircle(
+                                    //SpinKitPumpingHeart(color: Color(0xFFD898F8)))
+                                    SpinKitPumpingHeart(
+                                  //FadingCircle(
                                   //color: Color(0xFFD898F8),
                                   itemBuilder: (BuildContext context, int index) {
                                     return DecoratedBox(
@@ -483,12 +519,7 @@ class _signUpState extends State<signUp> {
                                 decoration: BoxDecoration(
                                     gradient: LinearGradient(colors: [Color(0xFFD898F8), Color(0xFF8189EC)]),
                                     borderRadius: BorderRadius.circular(6.0),
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: Color(0xFF6078ea).withOpacity(.3),
-                                          offset: Offset(0.0, 8.0),
-                                          blurRadius: 8.0)
-                                    ]),
+                                    boxShadow: [BoxShadow(color: Color(0xFF6078ea).withOpacity(.3), offset: Offset(0.0, 8.0), blurRadius: 8.0)]),
                                 child: Material(
                                   color: Colors.transparent,
                                   child: InkWell(
@@ -497,8 +528,7 @@ class _signUpState extends State<signUp> {
                                         isLoading = true;
                                       });
 
-                                      SharedPreferences prefs;
-                                      prefs = await SharedPreferences.getInstance();
+                                      /////////
                                       final formState = _registerFormKey.currentState;
 
                                       if (!formState.validate()) {
@@ -506,16 +536,14 @@ class _signUpState extends State<signUp> {
                                         setState(() {
                                           isLoading = false;
                                         });
-                                      }
-                                      else {
+                                      } else {
                                         formState.save();
                                         var signupErr = false;
                                         GGUser ggUser;
 
                                         UserCredential result = await FirebaseAuth.instance
                                             .createUserWithEmailAndPassword(
-                                                email: signupEmailController.text,
-                                                password: signupPasswordController.text)
+                                                email: signupEmailController.text, password: signupPasswordController.text)
                                             .catchError((err) {
                                           print(err);
                                           errMsg(context, err.toString());
@@ -531,9 +559,9 @@ class _signUpState extends State<signUp> {
                                           ggUser = GGUser(
                                               name: signupNameController.text,
                                               email: signupEmailController.text,
-                                              password: signupPasswordController.text,
-                                              country: signupCountryController.text,
-                                              city: signupCityController.text,
+                                              referred_by: refered_by_controller.text,
+                                              city: city_dropdown,
+                                              user_type: user_type_dropdown,
                                               level: 0,
                                               rating: 5.0,
                                               profile_photo: _photoDB == null ? EMPTY_PROFILE : _photoDB.toString());
@@ -543,11 +571,12 @@ class _signUpState extends State<signUp> {
                                             errMsg(context, err.toString());
                                           });
 
-                                          prefs.setString("username", ggUser.name);
-                                          prefs.setString("email", ggUser.email);
-                                          prefs.setString("country", ggUser.country);
-                                          prefs.setString("profile_photo", ggUser.profile_photo);
-                                          prefs.setString("city", ggUser.country);
+                                          SharedPreferences gg_prefs = await SharedPreferences.getInstance();
+
+                                          gg_prefs.setString("username", ggUser.name);
+                                          gg_prefs.setString("user_type", ggUser.user_type);
+                                          gg_prefs.setString("uid", ggUser.uid);
+                                          gg_prefs.setString("city", ggUser.city);
 
                                           Navigator.of(context).pushReplacement(PageRouteBuilder(
                                               pageBuilder: (_, __, ___) => new bottomNavBar(
@@ -558,11 +587,7 @@ class _signUpState extends State<signUp> {
                                     },
                                     child: Center(
                                       child: Text("SIGNUP",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontFamily: "Poppins-Bold",
-                                              fontSize: 18,
-                                              letterSpacing: 1.0)),
+                                          style: TextStyle(color: Colors.white, fontFamily: "Poppins-Bold", fontSize: 18, letterSpacing: 1.0)),
                                     ),
                                   ),
                                 ),
@@ -608,11 +633,7 @@ class _signUpState extends State<signUp> {
                           child: Center(
                             child: Text("SignIn",
                                 style: TextStyle(
-                                    color: Color(0xFFD898F8),
-                                    fontWeight: FontWeight.w300,
-                                    letterSpacing: 1.4,
-                                    fontSize: 15.0,
-                                    fontFamily: "Sofia")),
+                                    color: Color(0xFFD898F8), fontWeight: FontWeight.w300, letterSpacing: 1.4, fontSize: 15.0, fontFamily: "Sofia")),
                           ),
                         ),
                       )

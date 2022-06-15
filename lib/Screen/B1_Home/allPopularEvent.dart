@@ -5,7 +5,7 @@ import 'package:goddessGuild/Screen/B1_Home/Home_Search/search_page.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
-import 'Detail_Event.dart';
+import '../../event_detail.dart';
 
 class allPopularEvents extends StatefulWidget {
   String user_id;
@@ -153,7 +153,7 @@ class cardDataFirestore extends StatelessWidget {
           return InkWell(
             onTap: () {
               Navigator.of(context).push(PageRouteBuilder(
-                  pageBuilder: (_, __, ___) => new eventListDetail(
+                  pageBuilder: (_, __, ___) => new eventListDetailGoddess(
 
                       ),
                   transitionDuration: Duration(milliseconds: 600),
